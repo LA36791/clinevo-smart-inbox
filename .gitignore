@@ -1,0 +1,37 @@
+﻿# Python
+ai-service/.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Node / Angular
+frontend/node_modules/
+frontend/.angular/
+frontend/dist/
+
+# Java / Maven
+backend/target/
+backend/data/
+
+# Databases / runtime files
+*.db
+*.mv.db
+*.trace.db
+*.lock.db
+
+# Maven installation/downloads
+maven-temp/
+maven.zip
+
+# Temporary files
+temp_uploaded.pdf
+
+# Environment / secrets
+.env
+*.env
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

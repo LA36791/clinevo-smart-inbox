@@ -1,0 +1,131 @@
+﻿<div class="app">
+
+  <header class="header">
+    <div>
+      <h1>CLINEVO SMART INBOX</h1>
+      <p>Evidence-First AI Review</p>
+    </div>
+    <div class="online">● AI SERVICE ONLINE</div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <h2>Healthcare Document Intelligence</h2>
+      <p>Smart Inbox Assistant — classify, extract, trace and review.</p>
+    </div>
+  </section>
+
+  <section class="layout">
+
+    <aside class="inbox">
+      <h3>Inbox</h3>
+
+      <div class="mail" *ngFor="let item of inbox">
+        <strong>{{ item.subject }}</strong>
+        <small>{{ item.sender }}</small>
+        <span>{{ item.category }}</span>
+        <div class="mail-bottom">
+          <b>{{ confidence(item.confidence) }}%</b>
+          <em>{{ item.status }}</em>
+        </div>
+      </div>
+    </aside>
+
+    <main class="workspace">
+
+      <section class="upload-card">
+        <h2>Analyze PDF</h2>
+        <p>Upload a synthetic healthcare document for AI analysis.</p>
+
+        <input
+          type="file"
+          accept=".pdf,application/pdf"
+          (change)="onFileSelected($event)"
+        />
+
+        <button
+          (click)="analyze()"
+          [disabled]="!selectedFile || analyzing"
+        >
+          {{ analyzing ? 'ANALYZING...' : 'ANALYZE PDF' }}
+        </button>
+
+        <div class="status">{{ message }}</div>
+      </section>
+
+      <section class="result" *ngIf="analysis">
+
+        <div class="result-header">
+          <div>
+            <h2>AI Analysis Result</h2>
+            <p>{{ analysis.document_type }}</p>
+          </div>
+
+          <div class="review-badge">
+            {{ analysis.human_review_required ? 'HUMAN REVIEW REQUIRED' : 'AUTO PROCESSED' }}
+          </div>
+        </div>
+
+        <div class="decision" *ngFor="let decision of analysis.categories">
+          <div>
+            <small>CLASSIFICATION</small>
+            <h2>{{ decision.category }}</h2>
+          </div>
+
+          <div class="score">
+            {{ confidence(decision.confidence) }}%
+          </div>
+
+          <p>{{ decision.reason }}</p>
+        </div>
+
+        <div class="facts">
+          <h2>Extracted Facts</h2>
+
+          <div class="fact" *ngFor="let fact of analysis.facts">
+            <div class="fact-main">
+              <strong>{{ fact.field }}</strong>
+              <span>{{ fact.value }}</span>
+            </div>
+
+            <div class="fact-confidence">
+              {{ confidence(fact.confidence) }}%
+            </div>
+
+            <div class="evidence" *ngFor="let ev of fact.evidence">
+              <span>
+                {{ ev.source_type }} · {{ ev.source_id }}
+                <ng-container *ngIf="ev.page">
+                  · Page {{ ev.page }}
+                </ng-container>
+              </span>
+              <p>{{ ev.text }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="summary">
+          <h2>Summary</h2>
+          <p>{{ analysis.summary }}</p>
+        </div>
+
+        <div class="actions">
+          <button class="accept" (click)="acceptDecision()">
+            ✓ Accept Decision
+          </button>
+
+          <button class="override" (click)="overrideDecision()">
+            ↻ Override
+          </button>
+        </div>
+
+        <div class="processing">
+          Processing time:
+          <strong>{{ analysis.processing_time_ms }} ms</strong>
+        </div>
+
+      </section>
+
+    </main>
+  </section>
+</div>
