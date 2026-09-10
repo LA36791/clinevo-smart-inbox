@@ -3,35 +3,28 @@ ai-service/.venv/
 __pycache__/
 *.pyc
 *.pyo
-
-# Node / Angular
-frontend/node_modules/
-frontend/.angular/
-frontend/dist/
+*.pyd
 
 # Java / Maven
 backend/target/
 backend/data/
+*.class
 
-# Databases / runtime files
-*.db
-*.mv.db
-*.trace.db
-*.lock.db
+# Node / Angular
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
 
-# Maven installation/downloads
+# Local build/tool files
 maven-temp/
 maven.zip
-
-# Temporary files
 temp_uploaded.pdf
 
-# Environment / secrets
-.env
-*.env
+# Local agent/config files
+.superbrain/
 
-# IDE / OS
-.vscode/
-.idea/
+# OS/editor
 .DS_Store
 Thumbs.db
+.vscode/
+.idea/
