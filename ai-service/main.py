@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+﻿from datetime import datetime, timezone
 import io
 import re
 import time
@@ -533,7 +533,6 @@ async def analyze_document(file: UploadFile = File(...)):
                             if page_text and fact_value.lower() in page_text.lower():
                                 ev.page = page_number
                                 break
-                ev.page = None
             fact.confidence = min(
                 fact.confidence,
                 overall_confidence,
@@ -577,5 +576,8 @@ async def analyze_document(file: UploadFile = File(...)):
             ),
             timestamp_utc=datetime.now(timezone.utc).isoformat(),
         )
+
+
+
 
 

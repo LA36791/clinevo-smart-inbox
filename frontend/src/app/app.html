@@ -1,131 +1,539 @@
-﻿<div class="app">
+﻿<header class="header">
+  <div>
+    <div class="brand">CLINEVO SMART INBOX</div>
+    <div class="subbrand">Evidence-First AI Review</div>
+  </div>
 
-  <header class="header">
-    <div>
-      <h1>CLINEVO SMART INBOX</h1>
-      <p>Evidence-First AI Review</p>
-    </div>
-    <div class="online">● AI SERVICE ONLINE</div>
-  </header>
+  <div class="system-status">
+    <span class="status-dot"></span>
+    AI SERVICE ONLINE
+  </div>
+</header>
 
-  <section class="hero">
-    <div>
-      <h2>Healthcare Document Intelligence</h2>
-      <p>Smart Inbox Assistant — classify, extract, trace and review.</p>
-    </div>
-  </section>
+<section class="hero">
+  <div>
+    <p class="eyebrow">HEALTHCARE DOCUMENT INTELLIGENCE</p>
 
-  <section class="layout">
+    <h1>
+      Smart Inbox Assistant
+    </h1>
 
-    <aside class="inbox">
-      <h3>Inbox</h3>
+    <p>
+      Classify, extract, trace and review healthcare documents
+      with confidence-aware AI and human oversight.
+    </p>
+  </div>
+</section>
 
-      <div class="mail" *ngFor="let item of inbox">
-        <strong>{{ item.subject }}</strong>
-        <small>{{ item.sender }}</small>
-        <span>{{ item.category }}</span>
-        <div class="mail-bottom">
-          <b>{{ confidence(item.confidence) }}%</b>
-          <em>{{ item.status }}</em>
-        </div>
+<main class="layout">
+
+  <!-- ====================================================== -->
+  <!-- INBOX -->
+  <!-- ====================================================== -->
+
+  <aside class="inbox card">
+
+    <div class="section-title">
+      <div>
+        <small>TEST MAILBOX</small>
+        <h2>Incoming Messages</h2>
       </div>
-    </aside>
 
-    <main class="workspace">
+      <span class="count">
+        {{ inbox.length }}
+      </span>
+    </div>
 
-      <section class="upload-card">
-        <h2>Analyze PDF</h2>
-        <p>Upload a synthetic healthcare document for AI analysis.</p>
+    <div
+      class="mail"
+      *ngFor="let item of inbox"
+    >
 
-        <input
-          type="file"
-          accept=".pdf,application/pdf"
-          (change)="onFileSelected($event)"
-        />
+      <div class="mail-top">
+        <strong>
+          {{ item.subject }}
+        </strong>
 
-        <button
-          (click)="analyze()"
-          [disabled]="!selectedFile || analyzing"
+        <span
+          class="mail-status"
+          [class.reviewed]="item.status === 'Reviewed'"
         >
-          {{ analyzing ? 'ANALYZING...' : 'ANALYZE PDF' }}
-        </button>
+          {{ item.status }}
+        </span>
+      </div>
 
-        <div class="status">{{ message }}</div>
-      </section>
+      <div class="mail-sender">
+        {{ item.sender }}
+      </div>
 
-      <section class="result" *ngIf="analysis">
+      <div class="mail-bottom">
 
-        <div class="result-header">
-          <div>
-            <h2>AI Analysis Result</h2>
-            <p>{{ analysis.document_type }}</p>
-          </div>
+        <span>
+          {{ item.category }}
+        </span>
 
-          <div class="review-badge">
-            {{ analysis.human_review_required ? 'HUMAN REVIEW REQUIRED' : 'AUTO PROCESSED' }}
-          </div>
+        <em>
+          {{ confidence(item.confidence) }}%
+        </em>
+
+      </div>
+
+    </div>
+
+    <div class="synthetic-note">
+      Synthetic healthcare data only.
+      No real patient information is used.
+    </div>
+
+  </aside>
+
+
+  <!-- ====================================================== -->
+  <!-- WORKSPACE -->
+  <!-- ====================================================== -->
+
+  <section class="workspace">
+
+    <div class="upload-card card">
+
+      <p class="eyebrow">
+        LIVE ANALYSIS
+      </p>
+
+      <h2>
+        Analyze PDF Attachment
+      </h2>
+
+      <p class="muted">
+        Upload a synthetic healthcare PDF to simulate
+        an incoming mailbox attachment.
+      </p>
+
+      <input
+        type="file"
+        accept=".pdf,application/pdf"
+        (change)="onFileSelected($event)"
+      />
+
+      <button
+        class="primary-button"
+        (click)="analyze()"
+        [disabled]="!selectedFile || analyzing"
+      >
+        {{ analyzing ? 'Analyzing...' : 'Analyze Document' }}
+      </button>
+
+      <div class="status">
+        {{ message }}
+      </div>
+
+    </div>
+
+
+    <!-- ==================================================== -->
+    <!-- RESULT -->
+    <!-- ==================================================== -->
+
+    <div
+      class="result card"
+      *ngIf="analysis"
+    >
+
+      <div class="result-header">
+
+        <div>
+
+          <p class="eyebrow">
+            AI ANALYSIS RESULT
+          </p>
+
+          <h2>
+            {{ selectedFile?.name }}
+          </h2>
+
+          <p>
+            Analysis ID:
+            <strong>
+              #{{ analysis.analysisId || 'Pending' }}
+            </strong>
+          </p>
+
         </div>
 
-        <div class="decision" *ngFor="let decision of analysis.categories">
+        <div
+          class="review-badge"
+          *ngIf="analysis.human_review_required"
+        >
+          HUMAN REVIEW REQUIRED
+        </div>
+
+      </div>
+
+
+      <!-- ================================================== -->
+      <!-- METRICS -->
+      <!-- ================================================== -->
+
+      <div class="metrics">
+
+        <div class="metric">
+
+          <small>REVIEW PRIORITY</small>
+
+          <strong
+            class="priority"
+            [class.high]="reviewPriorityClass() === 'high'"
+            [class.medium]="reviewPriorityClass() === 'medium'"
+            [class.low]="reviewPriorityClass() === 'low'"
+          >
+            {{ reviewPriority() }}
+          </strong>
+
+        </div>
+
+        <div class="metric">
+
+          <small>EVIDENCE COVERAGE</small>
+
+          <strong>
+            {{ evidenceCoverage() }}%
+          </strong>
+
+        </div>
+
+        <div class="metric">
+
+          <small>EXTRACTED FACTS</small>
+
+          <strong>
+            {{ totalFactCount() }}
+          </strong>
+
+        </div>
+
+        <div class="metric">
+
+          <small>LOW CONFIDENCE</small>
+
+          <strong>
+            {{ lowConfidenceCount() }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- ================================================== -->
+      <!-- CLASSIFICATION -->
+      <!-- ================================================== -->
+
+      <section class="decision">
+
+        <small>
+          CLASSIFICATION
+        </small>
+
+        <div
+          class="decision-row"
+          *ngFor="let decision of analysis.categories"
+        >
+
           <div>
-            <small>CLASSIFICATION</small>
-            <h2>{{ decision.category }}</h2>
+
+            <h2>
+              {{ categoryLabel(decision.category) }}
+            </h2>
+
+            <p>
+              {{ decision.reason }}
+            </p>
+
           </div>
 
-          <div class="score">
+          <span class="score">
             {{ confidence(decision.confidence) }}%
-          </div>
+          </span>
 
-          <p>{{ decision.reason }}</p>
-        </div>
-
-        <div class="facts">
-          <h2>Extracted Facts</h2>
-
-          <div class="fact" *ngFor="let fact of analysis.facts">
-            <div class="fact-main">
-              <strong>{{ fact.field }}</strong>
-              <span>{{ fact.value }}</span>
-            </div>
-
-            <div class="fact-confidence">
-              {{ confidence(fact.confidence) }}%
-            </div>
-
-            <div class="evidence" *ngFor="let ev of fact.evidence">
-              <span>
-                {{ ev.source_type }} · {{ ev.source_id }}
-                <ng-container *ngIf="ev.page">
-                  · Page {{ ev.page }}
-                </ng-container>
-              </span>
-              <p>{{ ev.text }}</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="summary">
-          <h2>Summary</h2>
-          <p>{{ analysis.summary }}</p>
-        </div>
-
-        <div class="actions">
-          <button class="accept" (click)="acceptDecision()">
-            ✓ Accept Decision
-          </button>
-
-          <button class="override" (click)="overrideDecision()">
-            ↻ Override
-          </button>
-        </div>
-
-        <div class="processing">
-          Processing time:
-          <strong>{{ analysis.processing_time_ms }} ms</strong>
         </div>
 
       </section>
 
-    </main>
+
+      <!-- ================================================== -->
+      <!-- WHY FLAGGED -->
+      <!-- ================================================== -->
+
+      <section class="flag-panel">
+
+        <div>
+          <small>WHY FLAGGED FOR REVIEW</small>
+
+          <p>
+            {{ whyFlagged() }}
+          </p>
+        </div>
+
+        <div *ngIf="missingInformation().length">
+
+          <small>
+            MISSING / NOT STATED
+          </small>
+
+          <div class="missing-list">
+
+            <span
+              *ngFor="let field of missingInformation()"
+            >
+              {{ field }}
+            </span>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ================================================== -->
+      <!-- FACTS -->
+      <!-- ================================================== -->
+
+      <section class="facts">
+
+        <div class="section-title">
+
+          <div>
+
+            <small>
+              SOURCE-GROUNDED EXTRACTION
+            </small>
+
+            <h2>
+              Extracted Facts
+            </h2>
+
+          </div>
+
+        </div>
+
+        <div
+          class="fact"
+          *ngFor="let fact of analysis.facts"
+        >
+
+          <div class="fact-main">
+
+            <span>
+              {{ fact.field }}
+            </span>
+
+            <strong>
+              {{ fact.value }}
+            </strong>
+
+          </div>
+
+          <div class="fact-confidence">
+
+            Confidence:
+            {{ confidence(fact.confidence) }}%
+
+          </div>
+
+          <div
+            class="evidence"
+            *ngFor="let ev of fact.evidence"
+          >
+
+            <span>
+              EVIDENCE
+              <ng-container *ngIf="ev.page">
+                · PAGE {{ ev.page }}
+              </ng-container>
+            </span>
+
+            <p>
+              {{ ev.text }}
+            </p>
+
+            <small>
+              Source:
+              {{ ev.source_id }}
+              · Evidence confidence:
+              {{ confidence(ev.confidence) }}%
+            </small>
+
+          </div>
+
+          <div
+            class="no-evidence"
+            *ngIf="!fact.evidence?.length"
+          >
+            No supporting evidence found —
+            human verification required.
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ================================================== -->
+      <!-- SUMMARY -->
+      <!-- ================================================== -->
+
+      <section class="summary">
+
+        <small>
+          AI SUMMARY
+        </small>
+
+        <p>
+          {{ analysis.summary }}
+        </p>
+
+      </section>
+
+
+      <!-- ================================================== -->
+      <!-- REVIEW -->
+      <!-- ================================================== -->
+
+      <section class="review-panel">
+
+        <div class="section-title">
+
+          <div>
+
+            <small>
+              HUMAN-IN-THE-LOOP
+            </small>
+
+            <h2>
+              Reviewer Decision
+            </h2>
+
+          </div>
+
+        </div>
+
+        <div
+          class="review-complete"
+          *ngIf="reviewCompleted"
+        >
+
+          <strong>
+            {{ reviewAction === 'ACCEPT'
+              ? '✓ Decision accepted'
+              : '↻ Decision overridden'
+            }}
+          </strong>
+
+          <span>
+            Audit action recorded successfully.
+          </span>
+
+        </div>
+
+
+        <div
+          class="review-form"
+          *ngIf="!reviewCompleted"
+        >
+
+          <label>
+            Reviewer
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="reviewer"
+            placeholder="Reviewer name"
+          />
+
+          <label>
+            Override category
+          </label>
+
+          <select
+            [(ngModel)]="overrideCategory"
+          >
+
+            <option value="SAFETY_REPORT_ICSR">
+              Safety Report / ICSR
+            </option>
+
+            <option value="QUALITY_COMPLAINT_PQC">
+              Quality Complaint / PQC
+            </option>
+
+            <option value="INFO_REQUEST_MI">
+              Info Request / MI
+            </option>
+
+            <option value="NOT_RELEVANT">
+              Not Relevant
+            </option>
+
+          </select>
+
+          <label>
+            Review notes
+          </label>
+
+          <textarea
+            [(ngModel)]="reviewNotes"
+            rows="3"
+            placeholder="Optional reviewer notes"
+          ></textarea>
+
+          <div class="actions">
+
+            <button
+              class="accept"
+              (click)="acceptDecision()"
+              [disabled]="reviewing"
+            >
+              {{ reviewing ? 'Saving...' : 'Accept AI Decision' }}
+            </button>
+
+            <button
+              class="override"
+              (click)="overrideDecision()"
+              [disabled]="reviewing"
+            >
+              Override Decision
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ================================================== -->
+      <!-- PROCESSING -->
+      <!-- ================================================== -->
+
+      <div class="processing">
+
+        AI processing:
+        {{ analysis.processing_time_ms }} ms
+
+        <span *ngIf="analysis.backendProcessingTimeMs">
+          · Backend:
+          {{ analysis.backendProcessingTimeMs }} ms
+        </span>
+
+        ·
+        {{ analysis.timestamp_utc | date:'medium' }}
+
+      </div>
+
+    </div>
+
   </section>
-</div>
+
+</main>
