@@ -1,30 +1,42 @@
-﻿# Python
-ai-service/.venv/
+# Python
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+.venv/
+venv/
+env/
 
-# Java / Maven
-backend/target/
-backend/data/
-*.class
+# Environment / secrets
+.env
+*.env
+!.env.example
 
 # Node / Angular
-frontend/node_modules/
-frontend/dist/
-frontend/.angular/
+node_modules/
+dist/
+.angular/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
 
-# Local build/tool files
-maven-temp/
-maven.zip
-temp_uploaded.pdf
+# Java / Spring Boot
+target/
+*.class
 
-# Local agent/config files
-.superbrain/
-
-# OS/editor
-.DS_Store
-Thumbs.db
+# IDE
 .vscode/
 .idea/
+*.iml
+
+# Runtime / uploaded data
+data/uploads/
+data/processed/
+runs/
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.log

@@ -1,153 +1,260 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+ï»¿import { Component } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+
+interface EmailItem {
+  id: string;
+  sender: string;
+  subject: string;
+  date: string;
+  body: string;
+  attachments: string[];
+}
+
+interface AuditEntry {
+  action: string;
+  emailId: string;
+  timestamp: string;
+  details: string;
+}
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [CommonModule, HttpClientModule, FormsModule],
+  imports: [DecimalPipe],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.scss'
 })
 export class App {
 
-  private readonly backendUrl =
-    'http://127.0.0.1:8080';
-
   selectedFile: File | null = null;
   analysis: any = null;
+  loading = false;
+  error = '';
 
-  analyzing = false;
-  reviewing = false;
+  selectedEmail: EmailItem | null = null;
+  reviewStatus = '';
+  auditLog: AuditEntry[] = [];
 
-  message = 'Ready for review';
-
-  reviewer = 'Human Reviewer';
-  reviewNotes = '';
-
-  overrideCategory = '';
-
-  reviewCompleted = false;
-  reviewAction = '';
-
-  inbox = [
+  emails: EmailItem[] = [
     {
-      subject: 'Adverse event report – Product A',
-      sender: 'clinical@synthetic-health.test',
-      category: 'Safety Report / ICSR',
-      confidence: 0.92,
-      status: 'Needs Review'
+      id: 'MSG-001',
+      sender: 'safety@example.test',
+      subject: 'Adverse event report - Product A',
+      date: '2026-09-08 09:12',
+      body: 'Patient P-001 received Product A and developed nausea. Severity was non-serious. Batch BATCH-001. Reporter is Dr. Smith.',
+      attachments: ['synthetic_case.pdf']
     },
     {
-      subject: 'Complaint: damaged package – Product B',
-      sender: 'quality@synthetic-health.test',
-      category: 'Quality Complaint / PQC',
-      confidence: 0.89,
-      status: 'Needs Review'
+      id: 'MSG-002',
+      sender: 'quality@example.test',
+      subject: 'Complaint regarding Product B packaging',
+      date: '2026-09-08 09:25',
+      body: 'We received a complaint that Product B packaging was damaged on arrival. Lot LOT-2045. Please investigate the quality issue.',
+      attachments: []
     },
     {
-      subject: 'Question regarding Product C dosage',
-      sender: 'medical@synthetic-health.test',
-      category: 'Info Request / MI',
-      confidence: 0.94,
-      status: 'Reviewed'
+      id: 'MSG-003',
+      sender: 'medical@example.test',
+      subject: 'Medical information request - Product C',
+      date: '2026-09-08 09:41',
+      body: 'Please provide information about the recommended dosage and administration of Product C for adult patients.',
+      attachments: []
     },
     {
-      subject: 'Conference registration confirmation',
-      sender: 'events@synthetic-health.test',
-      category: 'Not Relevant',
-      confidence: 0.98,
-      status: 'Reviewed'
+      id: 'MSG-004',
+      sender: 'safety2@example.test',
+      subject: 'Serious reaction reported',
+      date: '2026-09-08 10:03',
+      body: 'Patient P-014 experienced severe dizziness after receiving Product D. The event required hospitalization. Reporter: Dr. Kumar.',
+      attachments: ['case_014.pdf']
+    },
+    {
+      id: 'MSG-005',
+      sender: 'quality2@example.test',
+      subject: 'Product defect complaint',
+      date: '2026-09-08 10:17',
+      body: 'The customer reports that Product E tablets were broken inside the package. Batch B-7788.',
+      attachments: ['product_photo.pdf']
+    },
+    {
+      id: 'MSG-006',
+      sender: 'medical2@example.test',
+      subject: 'Question about Product F',
+      date: '2026-09-08 10:31',
+      body: 'Can you confirm whether Product F has any known interaction with common antihypertensive medicines?',
+      attachments: []
+    },
+    {
+      id: 'MSG-007',
+      sender: 'newsletter@example.test',
+      subject: 'Monthly company newsletter',
+      date: '2026-09-08 10:46',
+      body: 'Please find attached our monthly internal newsletter containing company updates and employee announcements.',
+      attachments: ['newsletter.pdf']
+    },
+    {
+      id: 'MSG-008',
+      sender: 'safety3@example.test',
+      subject: 'Patient reaction follow-up',
+      date: '2026-09-08 11:02',
+      body: 'Follow-up for patient P-021. Product G caused headache and vomiting. Severity: serious. Reporter: Dr. Rao.',
+      attachments: []
+    },
+    {
+      id: 'MSG-009',
+      sender: 'quality3@example.test',
+      subject: 'Wrong label on Product H',
+      date: '2026-09-08 11:19',
+      body: 'A customer reported an incorrect label on Product H. Lot number LOT-9981. No patient reaction was reported.',
+      attachments: []
+    },
+    {
+      id: 'MSG-010',
+      sender: 'medical3@example.test',
+      subject: 'Product I clinical information',
+      date: '2026-09-08 11:36',
+      body: 'Could you provide the clinical information and indications available for Product I?',
+      attachments: ['product_i_info.pdf']
     }
   ];
 
-  constructor(private http: HttpClient) {}
-
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-
-    this.selectedFile = input.files?.[0] ?? null;
-    this.analysis = null;
-    this.reviewCompleted = false;
-    this.reviewAction = '';
-    this.overrideCategory = '';
-    this.reviewNotes = '';
-
-    this.message = this.selectedFile
-      ? `Selected: ${this.selectedFile.name}`
-      : 'Ready for review';
+  constructor(private http: HttpClient) {
+    this.selectedEmail = this.emails[0];
   }
 
-  analyze() {
-
-    if (!this.selectedFile) {
-      this.message = 'Please select a PDF first.';
-      return;
-    }
-
-    this.analyzing = true;
+  selectEmail(email: EmailItem): void {
+    this.selectedEmail = email;
     this.analysis = null;
-    this.reviewCompleted = false;
-    this.reviewAction = '';
+    this.error = '';
+    this.loading = false;
+    this.reviewStatus = '';
+    this.selectedFile = null;
+  }
 
-    this.message = 'AI is analyzing document...';
+  analyzeSelectedEmail(): void {
+    if (!this.selectedEmail) return;
 
-    const formData = new FormData();
-    formData.append('file', this.selectedFile);
+    this.loading = true;
+    this.error = '';
+    this.analysis = null;
+    this.reviewStatus = '';
 
-    this.http.post<any>(
-      `${this.backendUrl}/api/analyze`,
-      formData
-    ).subscribe({
+    const start = performance.now();
 
+    const request = {
+      messageId: this.selectedEmail.id,
+      sender: this.selectedEmail.sender,
+      subject: this.selectedEmail.subject,
+      date: this.selectedEmail.date,
+      body: this.selectedEmail.body,
+      attachments: this.selectedEmail.attachments
+    };
+
+    this.http.post<any>('/api/analyze', request).subscribe({
       next: (result) => {
+        const elapsed = Math.round(performance.now() - start);
 
-        console.log('ANALYSIS RESULT:', result);
+        this.analysis = {
+          ...result,
+          processing_time_ms: result.processing_time_ms ?? elapsed
+        };
 
-        if (typeof result === 'string') {
-          try {
-            this.analysis = JSON.parse(result);
-          } catch {
-            this.analysis = { summary: result };
-          }
-        } else {
-          this.analysis = result;
-        }
+        this.loading = false;
 
-        this.overrideCategory =
-          this.primaryCategory();
-
-        this.analyzing = false;
-
-        this.message =
-          'Analysis completed — human review required.';
+        this.addAudit(
+          'AI_ANALYSIS',
+          `AI analyzed ${this.selectedEmail?.id} in ${this.analysis.processing_time_ms} ms`
+        );
       },
-
-      error: (error) => {
-
-        console.error('ANALYSIS ERROR:', error);
-
-        this.analyzing = false;
-
-        this.message =
-          `Analysis failed: ${error.status || ''} ${
-            error.statusText || error.message || ''
-          }`;
+      error: (err) => {
+        console.error('ANALYSIS ERROR:', err);
+        this.loading = false;
+        this.error = `Analysis failed: HTTP ${err.status || 'unknown'}`;
       }
     });
   }
 
-  primaryCategory(): string {
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
 
-    const category =
-      this.analysis?.categories?.[0]?.category;
+    if (!file) return;
 
-    return category || 'NOT_RELEVANT';
+    this.selectedFile = file;
+    this.analysis = null;
+    this.error = '';
+    this.reviewStatus = '';
+    this.loading = true;
+
+    const start = performance.now();
+    const formData = new FormData();
+    formData.append('file', file);
+
+    this.http.post<any>('/api/analyze-document', formData).subscribe({
+      next: (result) => {
+        const elapsed = Math.round(performance.now() - start);
+
+        this.analysis = {
+          ...result,
+          processing_time_ms: result.processing_time_ms ?? elapsed
+        };
+
+        this.loading = false;
+
+        this.addAudit(
+          'PDF_ANALYSIS',
+          `PDF ${file.name} processed in ${this.analysis.processing_time_ms} ms`
+        );
+      },
+      error: (err) => {
+        console.error('PDF ANALYSIS ERROR:', err);
+        this.loading = false;
+        this.error = `PDF analysis failed: HTTP ${err.status || 'unknown'}`;
+      }
+    });
   }
 
-  categoryLabel(category: string): string {
+  acceptDecision(): void {
+    if (!this.analysis || !this.selectedEmail) return;
 
+    this.reviewStatus = 'ACCEPTED';
+
+    this.addAudit(
+      'REVIEW_ACCEPTED',
+      `Human reviewer accepted AI decision for ${this.selectedEmail.id}`
+    );
+  }
+
+  overrideDecision(): void {
+    if (!this.analysis || !this.selectedEmail) return;
+
+    this.reviewStatus = 'OVERRIDDEN';
+
+    this.addAudit(
+      'REVIEW_OVERRIDDEN',
+      `Human reviewer overrode AI decision for ${this.selectedEmail.id}`
+    );
+  }
+
+  addAudit(action: string, details: string): void {
+    this.auditLog.unshift({
+      action,
+      emailId: this.selectedEmail?.id || 'DOCUMENT',
+      timestamp: new Date().toISOString(),
+      details
+    });
+  }
+
+  getConfidenceClass(value: number | undefined): string {
+    if (value === undefined || value === null) return 'confidence-low';
+
+    if (value >= 0.85) return 'confidence-high';
+    if (value >= 0.60) return 'confidence-medium';
+
+    return 'confidence-low';
+  }
+
+  getCategoryLabel(category: string): string {
     const labels: Record<string, string> = {
       SAFETY_REPORT_ICSR: 'Safety Report / ICSR',
       QUALITY_COMPLAINT_PQC: 'Quality Complaint / PQC',
@@ -156,229 +263,5 @@ export class App {
     };
 
     return labels[category] || category;
-  }
-
-  confidence(value: number): number {
-    return Math.round((value ?? 0) * 100);
-  }
-
-  evidenceCount(): number {
-
-    const facts = this.analysis?.facts || [];
-
-    return facts.filter(
-      (fact: any) =>
-        fact.evidence &&
-        fact.evidence.length > 0
-    ).length;
-  }
-
-  totalFactCount(): number {
-    return this.analysis?.facts?.length || 0;
-  }
-
-  evidenceCoverage(): number {
-
-    const total = this.totalFactCount();
-
-    if (!total) {
-      return 0;
-    }
-
-    return Math.round(
-      (this.evidenceCount() / total) * 100
-    );
-  }
-
-  lowConfidenceCount(): number {
-
-    const facts = this.analysis?.facts || [];
-
-    return facts.filter(
-      (fact: any) =>
-        (fact.confidence ?? 0) < 0.75
-    ).length;
-  }
-
-  reviewPriority(): string {
-
-    if (!this.analysis) {
-      return '—';
-    }
-
-    const categories =
-      this.analysis.categories?.length || 0;
-
-    const lowConfidence =
-      this.lowConfidenceCount();
-
-    const coverage =
-      this.evidenceCoverage();
-
-    if (
-      categories > 1 ||
-      lowConfidence > 0 ||
-      coverage < 75
-    ) {
-      return 'HIGH';
-    }
-
-    if (
-      this.analysis.human_review_required
-    ) {
-      return 'MEDIUM';
-    }
-
-    return 'LOW';
-  }
-
-  reviewPriorityClass(): string {
-
-    const priority = this.reviewPriority();
-
-    return priority.toLowerCase();
-  }
-
-  whyFlagged(): string {
-
-    if (!this.analysis) {
-      return '';
-    }
-
-    const reasons: string[] = [];
-
-    if (this.analysis.human_review_required) {
-      reasons.push('Human verification is required');
-    }
-
-    if (this.analysis.categories?.length > 1) {
-      reasons.push('Multiple relevant categories detected');
-    }
-
-    if (this.lowConfidenceCount() > 0) {
-      reasons.push('One or more extracted facts have low confidence');
-    }
-
-    if (this.evidenceCoverage() < 75) {
-      reasons.push('Evidence coverage is incomplete');
-    }
-
-    if (!reasons.length) {
-      return 'No major review risk detected.';
-    }
-
-    return reasons.join('. ') + '.';
-  }
-
-  missingInformation(): string[] {
-
-    if (!this.analysis?.facts) {
-      return [];
-    }
-
-    return this.analysis.facts
-      .filter(
-        (fact: any) =>
-          fact.value === 'Not stated'
-      )
-      .map(
-        (fact: any) =>
-          fact.field
-      );
-  }
-
-  acceptDecision() {
-
-    this.submitReview(
-      'ACCEPT',
-      this.primaryCategory()
-    );
-  }
-
-  overrideDecision() {
-
-    if (!this.overrideCategory) {
-      this.message =
-        'Select the final category before overriding.';
-      return;
-    }
-
-    this.submitReview(
-      'OVERRIDE',
-      this.overrideCategory
-    );
-  }
-
-  private submitReview(
-    action: string,
-    finalCategory: string
-  ) {
-
-    if (!this.analysis?.analysisId) {
-
-      this.message =
-        'Review cannot be saved because analysisId is missing.';
-
-      return;
-    }
-
-    this.reviewing = true;
-    this.message = 'Saving reviewer decision...';
-
-    const payload = {
-
-      analysisId:
-        Number(this.analysis.analysisId),
-
-      action,
-
-      originalCategory:
-        this.primaryCategory(),
-
-      finalCategory,
-
-      reviewer:
-        this.reviewer || 'Human Reviewer',
-
-      notes:
-        this.reviewNotes || ''
-    };
-
-    this.http.post<any>(
-      `${this.backendUrl}/api/review`,
-      payload
-    ).subscribe({
-
-      next: (result) => {
-
-        console.log('REVIEW SAVED:', result);
-
-        this.reviewing = false;
-        this.reviewCompleted = true;
-        this.reviewAction = action;
-
-        this.message =
-          action === 'ACCEPT'
-            ? '? AI decision accepted — reviewer action recorded.'
-            : '? Decision overridden — reviewer action recorded.';
-      },
-
-      error: (error) => {
-
-        console.error('REVIEW ERROR:', error);
-
-        this.reviewing = false;
-
-        this.message =
-          `Review save failed: ${
-            error.status || ''
-          } ${
-            error.error?.message ||
-            error.statusText ||
-            error.message ||
-            ''
-          }`;
-      }
-    });
   }
 }

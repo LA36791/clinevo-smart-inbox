@@ -1,539 +1,459 @@
-﻿<header class="header">
-  <div>
-    <div class="brand">CLINEVO SMART INBOX</div>
-    <div class="subbrand">Evidence-First AI Review</div>
-  </div>
+﻿```html
+<div class="app-shell">
 
-  <div class="system-status">
-    <span class="status-dot"></span>
-    AI SERVICE ONLINE
-  </div>
-</header>
-
-<section class="hero">
-  <div>
-    <p class="eyebrow">HEALTHCARE DOCUMENT INTELLIGENCE</p>
-
-    <h1>
-      Smart Inbox Assistant
-    </h1>
-
-    <p>
-      Classify, extract, trace and review healthcare documents
-      with confidence-aware AI and human oversight.
-    </p>
-  </div>
-</section>
-
-<main class="layout">
-
-  <!-- ====================================================== -->
-  <!-- INBOX -->
-  <!-- ====================================================== -->
-
-  <aside class="inbox card">
-
-    <div class="section-title">
-      <div>
-        <small>TEST MAILBOX</small>
-        <h2>Incoming Messages</h2>
-      </div>
-
-      <span class="count">
-        {{ inbox.length }}
-      </span>
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">CLINEVO · AI WORKFLOW</div>
+      <h1>Smart Inbox</h1>
+      <p>Evidence-first AI triage for healthcare communications</p>
     </div>
 
-    <div
-      class="mail"
-      *ngFor="let item of inbox"
-    >
-
-      <div class="mail-top">
-        <strong>
-          {{ item.subject }}
-        </strong>
-
-        <span
-          class="mail-status"
-          [class.reviewed]="item.status === 'Reviewed'"
-        >
-          {{ item.status }}
-        </span>
-      </div>
-
-      <div class="mail-sender">
-        {{ item.sender }}
-      </div>
-
-      <div class="mail-bottom">
-
-        <span>
-          {{ item.category }}
-        </span>
-
-        <em>
-          {{ confidence(item.confidence) }}%
-        </em>
-
-      </div>
-
+    <div class="system-status">
+      <span class="status-dot"></span>
+      AI Service Online
     </div>
+  </header>
 
-    <div class="synthetic-note">
-      Synthetic healthcare data only.
-      No real patient information is used.
-    </div>
+  <main class="workspace">
 
-  </aside>
+    <aside class="inbox-panel">
 
-
-  <!-- ====================================================== -->
-  <!-- WORKSPACE -->
-  <!-- ====================================================== -->
-
-  <section class="workspace">
-
-    <div class="upload-card card">
-
-      <p class="eyebrow">
-        LIVE ANALYSIS
-      </p>
-
-      <h2>
-        Analyze PDF Attachment
-      </h2>
-
-      <p class="muted">
-        Upload a synthetic healthcare PDF to simulate
-        an incoming mailbox attachment.
-      </p>
-
-      <input
-        type="file"
-        accept=".pdf,application/pdf"
-        (change)="onFileSelected($event)"
-      />
-
-      <button
-        class="primary-button"
-        (click)="analyze()"
-        [disabled]="!selectedFile || analyzing"
-      >
-        {{ analyzing ? 'Analyzing...' : 'Analyze Document' }}
-      </button>
-
-      <div class="status">
-        {{ message }}
+      <div class="panel-heading">
+        <div>
+          <span class="section-label">INBOX</span>
+          <h2>Incoming Messages</h2>
+        </div>
+        <span class="message-count">{{ emails.length }}</span>
       </div>
 
-    </div>
+      <div class="inbox-list">
+
+        @for (email of emails; track email.id) {
+
+          <button
+            class="email-row"
+            [class.selected]="selectedEmail?.id === email.id"
+            (click)="selectEmail(email)">
+
+            <div class="email-row-top">
+              <strong>{{ email.sender }}</strong>
+              <span>{{ email.date }}</span>
+            </div>
+
+            <div class="email-subject">
+              {{ email.subject }}
+            </div>
+
+            <div class="email-preview">
+              {{ email.body }}
+            </div>
+
+            @if (email.attachments.length > 0) {
+              <div class="attachment-count">
+                📎 {{ email.attachments.length }} attachment(s)
+              </div>
+            }
+
+          </button>
+
+        }
+
+      </div>
+
+    </aside>
 
 
-    <!-- ==================================================== -->
-    <!-- RESULT -->
-    <!-- ==================================================== -->
+    <section class="content-panel">
 
-    <div
-      class="result card"
-      *ngIf="analysis"
-    >
+      @if (selectedEmail) {
 
-      <div class="result-header">
+        <div class="message-card">
+
+          <div class="message-header">
+
+            <div>
+              <span class="section-label">MESSAGE {{ selectedEmail.id }}</span>
+              <h2>{{ selectedEmail.subject }}</h2>
+            </div>
+
+            @if (reviewStatus) {
+              <span
+                class="review-badge"
+                [class.accepted]="reviewStatus === 'ACCEPTED'"
+                [class.overridden]="reviewStatus === 'OVERRIDDEN'">
+                {{ reviewStatus }}
+              </span>
+            }
+
+          </div>
+
+          <div class="message-meta">
+            <span><strong>From:</strong> {{ selectedEmail.sender }}</span>
+            <span><strong>Date:</strong> {{ selectedEmail.date }}</span>
+          </div>
+
+          <div class="message-body">
+            {{ selectedEmail.body }}
+          </div>
+
+          @if (selectedEmail.attachments.length > 0) {
+
+            <div class="attachments">
+
+              <span class="section-label">ATTACHMENTS</span>
+
+              @for (attachment of selectedEmail.attachments; track attachment) {
+                <div class="attachment">
+                  <span>📄</span>
+                  <span>{{ attachment }}</span>
+                </div>
+              }
+
+            </div>
+
+          }
+
+          <button
+            class="primary-button"
+            [disabled]="loading"
+            (click)="analyzeSelectedEmail()">
+
+            @if (loading) {
+              Analyzing...
+            } @else {
+              Analyze Email
+            }
+
+          </button>
+
+        </div>
+
+
+        @if (error) {
+          <div class="error-box">
+            {{ error }}
+          </div>
+        }
+
+
+        @if (loading) {
+
+          <div class="loading-card">
+            <div class="loader"></div>
+            <div>
+              <strong>Running AI analysis</strong>
+              <p>Classifying message and extracting evidence-backed facts...</p>
+            </div>
+          </div>
+
+        }
+
+
+        @if (analysis && !loading) {
+
+          <section class="analysis-section">
+
+            <div class="section-title-row">
+              <div>
+                <span class="section-label">AI DECISION</span>
+                <h2>Classification & Review</h2>
+              </div>
+
+              @if (analysis.human_review_required) {
+                <span class="review-required">
+                  Human review required
+                </span>
+              }
+
+            </div>
+
+
+            <div class="decision-card">
+
+              <div class="decision-main">
+
+                <span class="decision-label">ROUTING</span>
+
+                <div class="category-list">
+
+                  @for (category of analysis.categories || []; track category) {
+
+                    <span class="category-chip">
+                      {{ getCategoryLabel(category) }}
+                    </span>
+
+                  }
+
+                </div>
+
+                @if (analysis.classification_confidence !== undefined) {
+
+                  <div class="confidence-row">
+
+                    <span>Confidence</span>
+
+                    <strong
+                      [class]="getConfidenceClass(analysis.classification_confidence)">
+
+                      {{ analysis.classification_confidence * 100 | number:'1.0-0' }}%
+
+                    </strong>
+
+                  </div>
+
+                }
+
+              </div>
+
+
+              <div class="decision-reason">
+
+                <span class="decision-label">WHY</span>
+
+                <p>
+                  {{ analysis.reason || analysis.classification_reason || 'No classification reason provided.' }}
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <div class="review-actions">
+
+              <button
+                class="accept-button"
+                [disabled]="reviewStatus !== ''"
+                (click)="acceptDecision()">
+
+                ✓ Accept AI Decision
+
+              </button>
+
+              <button
+                class="override-button"
+                [disabled]="reviewStatus !== ''"
+                (click)="overrideDecision()">
+
+                Override
+
+              </button>
+
+            </div>
+
+
+            <section class="facts-card">
+
+              <div class="section-title-row">
+
+                <div>
+                  <span class="section-label">EVIDENCE LAYER</span>
+                  <h2>Extracted Facts</h2>
+                </div>
+
+                <span class="fact-count">
+                  {{ (analysis.facts || []).length }} fields
+                </span>
+
+              </div>
+
+
+              <div class="facts-table">
+
+                <div class="fact-header">
+                  <span>Field</span>
+                  <span>Value</span>
+                  <span>Confidence</span>
+                  <span>Source</span>
+                </div>
+
+                @for (fact of analysis.facts || []; track fact.field) {
+
+                  <div class="fact-row">
+
+                    <span class="fact-name">
+                      {{ fact.field }}
+                    </span>
+
+                    <span
+                      class="fact-value"
+                      [class.not-stated]="fact.value === 'Not stated'">
+
+                      {{ fact.value }}
+
+                    </span>
+
+                    <span
+                      [class]="getConfidenceClass(fact.confidence)">
+
+                      {{ fact.confidence * 100 | number:'1.0-0' }}%
+
+                    </span>
+
+                    <span class="fact-source">
+                      {{ fact.source || 'email' }}
+                    </span>
+
+                  </div>
+
+                }
+
+              </div>
+
+            </section>
+
+
+            @if (analysis.document_summary) {
+
+              <section class="summary-card">
+
+                <span class="section-label">DOCUMENT INTELLIGENCE</span>
+
+                <h2>Summary & Relevance</h2>
+
+                <p>{{ analysis.document_summary }}</p>
+
+              </section>
+
+            }
+
+
+            @if (analysis.page_evidence && analysis.page_evidence.length > 0) {
+
+              <section class="evidence-card">
+
+                <div class="section-title-row">
+
+                  <div>
+                    <span class="section-label">TRACEABILITY</span>
+                    <h2>Source Evidence</h2>
+                  </div>
+
+                </div>
+
+                @for (evidence of analysis.page_evidence; track evidence.page) {
+
+                  <div class="evidence-row">
+
+                    <div class="evidence-page">
+                      Page {{ evidence.page }}
+                    </div>
+
+                    <div>
+                      <div class="evidence-text">
+                        {{ evidence.text }}
+                      </div>
+
+                      <div class="evidence-confidence">
+                        Evidence confidence:
+                        {{ evidence.confidence * 100 | number:'1.0-0' }}%
+                      </div>
+                    </div>
+
+                  </div>
+
+                }
+
+              </section>
+
+            }
+
+
+            <section class="processing-card">
+
+              <div>
+                <span class="section-label">PROCESSING</span>
+                <strong>
+                  {{ analysis.processing_time_ms || '—' }} ms
+                </strong>
+              </div>
+
+              <div>
+                <span class="section-label">PROCESSED AT</span>
+                <strong>
+                  {{ analysis.processed_at || '—' }}
+                </strong>
+              </div>
+
+            </section>
+
+          </section>
+
+        }
+
+      }
+
+
+      <section class="pdf-upload-card">
 
         <div>
-
-          <p class="eyebrow">
-            AI ANALYSIS RESULT
-          </p>
-
-          <h2>
-            {{ selectedFile?.name }}
-          </h2>
-
+          <span class="section-label">DOCUMENT ANALYSIS</span>
+          <h2>Analyze PDF Attachment</h2>
           <p>
-            Analysis ID:
-            <strong>
-              #{{ analysis.analysisId || 'Pending' }}
-            </strong>
-          </p>
-
-        </div>
-
-        <div
-          class="review-badge"
-          *ngIf="analysis.human_review_required"
-        >
-          HUMAN REVIEW REQUIRED
-        </div>
-
-      </div>
-
-
-      <!-- ================================================== -->
-      <!-- METRICS -->
-      <!-- ================================================== -->
-
-      <div class="metrics">
-
-        <div class="metric">
-
-          <small>REVIEW PRIORITY</small>
-
-          <strong
-            class="priority"
-            [class.high]="reviewPriorityClass() === 'high'"
-            [class.medium]="reviewPriorityClass() === 'medium'"
-            [class.low]="reviewPriorityClass() === 'low'"
-          >
-            {{ reviewPriority() }}
-          </strong>
-
-        </div>
-
-        <div class="metric">
-
-          <small>EVIDENCE COVERAGE</small>
-
-          <strong>
-            {{ evidenceCoverage() }}%
-          </strong>
-
-        </div>
-
-        <div class="metric">
-
-          <small>EXTRACTED FACTS</small>
-
-          <strong>
-            {{ totalFactCount() }}
-          </strong>
-
-        </div>
-
-        <div class="metric">
-
-          <small>LOW CONFIDENCE</small>
-
-          <strong>
-            {{ lowConfidenceCount() }}
-          </strong>
-
-        </div>
-
-      </div>
-
-
-      <!-- ================================================== -->
-      <!-- CLASSIFICATION -->
-      <!-- ================================================== -->
-
-      <section class="decision">
-
-        <small>
-          CLASSIFICATION
-        </small>
-
-        <div
-          class="decision-row"
-          *ngFor="let decision of analysis.categories"
-        >
-
-          <div>
-
-            <h2>
-              {{ categoryLabel(decision.category) }}
-            </h2>
-
-            <p>
-              {{ decision.reason }}
-            </p>
-
-          </div>
-
-          <span class="score">
-            {{ confidence(decision.confidence) }}%
-          </span>
-
-        </div>
-
-      </section>
-
-
-      <!-- ================================================== -->
-      <!-- WHY FLAGGED -->
-      <!-- ================================================== -->
-
-      <section class="flag-panel">
-
-        <div>
-          <small>WHY FLAGGED FOR REVIEW</small>
-
-          <p>
-            {{ whyFlagged() }}
+            Upload a synthetic healthcare PDF to run the document intelligence
+            pipeline and page-level evidence extraction.
           </p>
         </div>
 
-        <div *ngIf="missingInformation().length">
-
-          <small>
-            MISSING / NOT STATED
-          </small>
-
-          <div class="missing-list">
-
-            <span
-              *ngFor="let field of missingInformation()"
-            >
-              {{ field }}
-            </span>
-
-          </div>
-
-        </div>
-
-      </section>
-
-
-      <!-- ================================================== -->
-      <!-- FACTS -->
-      <!-- ================================================== -->
-
-      <section class="facts">
-
-        <div class="section-title">
-
-          <div>
-
-            <small>
-              SOURCE-GROUNDED EXTRACTION
-            </small>
-
-            <h2>
-              Extracted Facts
-            </h2>
-
-          </div>
-
-        </div>
-
-        <div
-          class="fact"
-          *ngFor="let fact of analysis.facts"
-        >
-
-          <div class="fact-main">
-
-            <span>
-              {{ fact.field }}
-            </span>
-
-            <strong>
-              {{ fact.value }}
-            </strong>
-
-          </div>
-
-          <div class="fact-confidence">
-
-            Confidence:
-            {{ confidence(fact.confidence) }}%
-
-          </div>
-
-          <div
-            class="evidence"
-            *ngFor="let ev of fact.evidence"
-          >
-
-            <span>
-              EVIDENCE
-              <ng-container *ngIf="ev.page">
-                · PAGE {{ ev.page }}
-              </ng-container>
-            </span>
-
-            <p>
-              {{ ev.text }}
-            </p>
-
-            <small>
-              Source:
-              {{ ev.source_id }}
-              · Evidence confidence:
-              {{ confidence(ev.confidence) }}%
-            </small>
-
-          </div>
-
-          <div
-            class="no-evidence"
-            *ngIf="!fact.evidence?.length"
-          >
-            No supporting evidence found —
-            human verification required.
-          </div>
-
-        </div>
-
-      </section>
-
-
-      <!-- ================================================== -->
-      <!-- SUMMARY -->
-      <!-- ================================================== -->
-
-      <section class="summary">
-
-        <small>
-          AI SUMMARY
-        </small>
-
-        <p>
-          {{ analysis.summary }}
-        </p>
-
-      </section>
-
-
-      <!-- ================================================== -->
-      <!-- REVIEW -->
-      <!-- ================================================== -->
-
-      <section class="review-panel">
-
-        <div class="section-title">
-
-          <div>
-
-            <small>
-              HUMAN-IN-THE-LOOP
-            </small>
-
-            <h2>
-              Reviewer Decision
-            </h2>
-
-          </div>
-
-        </div>
-
-        <div
-          class="review-complete"
-          *ngIf="reviewCompleted"
-        >
-
-          <strong>
-            {{ reviewAction === 'ACCEPT'
-              ? '✓ Decision accepted'
-              : '↻ Decision overridden'
-            }}
-          </strong>
-
-          <span>
-            Audit action recorded successfully.
-          </span>
-
-        </div>
-
-
-        <div
-          class="review-form"
-          *ngIf="!reviewCompleted"
-        >
-
-          <label>
-            Reviewer
-          </label>
-
+        <label class="upload-button">
+          Choose PDF
           <input
-            type="text"
-            [(ngModel)]="reviewer"
-            placeholder="Reviewer name"
-          />
+            type="file"
+            accept=".pdf,application/pdf"
+            (change)="onFileSelected($event)">
+        </label>
 
-          <label>
-            Override category
-          </label>
-
-          <select
-            [(ngModel)]="overrideCategory"
-          >
-
-            <option value="SAFETY_REPORT_ICSR">
-              Safety Report / ICSR
-            </option>
-
-            <option value="QUALITY_COMPLAINT_PQC">
-              Quality Complaint / PQC
-            </option>
-
-            <option value="INFO_REQUEST_MI">
-              Info Request / MI
-            </option>
-
-            <option value="NOT_RELEVANT">
-              Not Relevant
-            </option>
-
-          </select>
-
-          <label>
-            Review notes
-          </label>
-
-          <textarea
-            [(ngModel)]="reviewNotes"
-            rows="3"
-            placeholder="Optional reviewer notes"
-          ></textarea>
-
-          <div class="actions">
-
-            <button
-              class="accept"
-              (click)="acceptDecision()"
-              [disabled]="reviewing"
-            >
-              {{ reviewing ? 'Saving...' : 'Accept AI Decision' }}
-            </button>
-
-            <button
-              class="override"
-              (click)="overrideDecision()"
-              [disabled]="reviewing"
-            >
-              Override Decision
-            </button>
-
+        @if (selectedFile) {
+          <div class="selected-file">
+            Selected: <strong>{{ selectedFile.name }}</strong>
           </div>
-
-        </div>
+        }
 
       </section>
 
 
-      <!-- ================================================== -->
-      <!-- PROCESSING -->
-      <!-- ================================================== -->
+      @if (auditLog.length > 0) {
 
-      <div class="processing">
+        <section class="audit-card">
 
-        AI processing:
-        {{ analysis.processing_time_ms }} ms
+          <div class="section-title-row">
+            <div>
+              <span class="section-label">GOVERNANCE</span>
+              <h2>Audit Trail</h2>
+            </div>
 
-        <span *ngIf="analysis.backendProcessingTimeMs">
-          · Backend:
-          {{ analysis.backendProcessingTimeMs }} ms
-        </span>
+            <span class="fact-count">
+              {{ auditLog.length }} events
+            </span>
+          </div>
 
-        ·
-        {{ analysis.timestamp_utc | date:'medium' }}
+          @for (entry of auditLog; track $index) {
 
-      </div>
+            <div class="audit-row">
 
-    </div>
+              <div class="audit-action">
+                {{ entry.action }}
+              </div>
 
-  </section>
+              <div class="audit-details">
+                {{ entry.details }}
+              </div>
 
-</main>
+              <div class="audit-time">
+                {{ entry.timestamp }}
+              </div>
+
+            </div>
+
+          }
+
+        </section>
+
+      }
+
+    </section>
+
+  </main>
+
+</div>
+```
