@@ -28,3 +28,17 @@ class AnalysisResult(BaseModel):
     human_review_required: bool
     processing_time_ms: int
     timestamp_utc: str
+    page_count: int = 0
+    extracted_text: str = ''
+    pages: list = []
+    ocr_confidence: float | None = None
+    language_flag: str = 'en'
+
+from pydantic import BaseModel as _BM2
+
+
+class PageResult(_BM2):
+    page: int
+    text: str
+    confidence: float = 0.95
+    source: str = 'PDF_TEXT'

@@ -132,7 +132,15 @@ private Long insertAndGetId(String sql, Object... params) {
 
     }, keyHolder);
 
-    Number key = keyHolder.getKey();
+    Number key;
+
+    // H2 may return multiple generated keys; getKey() then throws.
+    // Read the ID column directly from the returned key map instead.
+    if (keyHolder.getKeys() != null && keyHolder.getKeys().containsKey("ID")) {
+        key = (Number) keyHolder.getKeys().get("ID");
+    } else {
+        key = keyHolder.getKey();
+    }
 
     if (key == null) {
         throw new IllegalStateException(

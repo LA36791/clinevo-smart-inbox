@@ -1,4 +1,4 @@
-﻿<header class="header">
+<header class="header">
   <div>
     <div class="brand">CLINEVO SMART INBOX</div>
     <div class="subbrand">Evidence-First AI Review</div>
@@ -6,7 +6,7 @@
 
   <div class="system-status">
     <span class="status-dot"></span>
-    AI SERVICE ONLINE
+    {{ backendOnline === false ? 'BACKEND OFFLINE' : backendOnline ? 'BACKEND ONLINE' : 'CHECKING BACKEND...' }} (Backend: {{ backendLabel() }})
   </div>
 </header>
 

@@ -77,4 +77,93 @@ public class AiService {
 
         return enrichedResult;
     }
+
+    /*
+     * Sequential batch: reuses the single-document flow so per-document
+     * traceability and persistence are identical. One failing document
+     * does not abort the batch.
+     */
+    public java.util.List<Object> analyzeBatch(java.util.List<org.springframework.web.multipart.MultipartFile> files)
+            throws Exception {
+
+        java.util.List<Object> results = new java.util.ArrayList<>();
+
+        if (files == null || files.isEmpty()) {
+            return results;
+        }
+
+        // Cap protects the AI service from oversized batches; 15 is the
+        // largest assignment batch. Never abort the whole batch for one file.
+        int limit = Math.min(files.size(), 15);
+
+        for (int i = 0; i < limit; i++) {
+            org.springframework.web.multipart.MultipartFile file = files.get(i);
+            String filename =
+                    file == null ? null : file.getOriginalFilename();
+
+            if (file == null || file.isEmpty()) {
+                results.add(mapper.createObjectNode()
+                        .put("file", filename == null ? "unknown" : filename)
+                        .put("filename", filename == null ? "unknown" : filename)
+                        .put("status", "ERROR")
+                        .put("classification", "NOT_PROCESSED")
+                        .put("confidence", 0.0)
+                        .put("processingTimeMs", 0)
+                        .put("humanReviewRequired", true)
+                        .put("message", "Empty file; skipped without aborting batch"));
+                continue;
+            }
+
+            long docStart = System.currentTimeMillis();
+            try {
+                Object ok = analyze(file.getBytes(), filename);
+                if (ok instanceof com.fasterxml.jackson.databind.node.ObjectNode node) {
+                    node.put("file", filename == null ? "unknown" : filename);
+                    node.put("filename", filename == null ? "unknown" : filename);
+                    node.put("status", "OK");
+                    // Flatten the most useful per-document fields for batch UI.
+                    try {
+                        com.fasterxml.jackson.databind.JsonNode cats = node.get("categories");
+                        if (cats != null && cats.isArray() && cats.size() > 0) {
+                            node.put("classification", cats.get(0).path("category").asText("UNKNOWN"));
+                            node.put("confidence", cats.get(0).path("confidence").asDouble(0));
+                        } else {
+                            node.put("classification", "UNKNOWN");
+                            node.put("confidence", 0.0);
+                        }
+                        node.put("humanReviewRequired", node.path("human_review_required").asBoolean(true));
+                        node.put("processingTimeMs", node.path("processing_time_ms").asLong(System.currentTimeMillis() - docStart));
+                        // Key extracted info: compact field->value map.
+                        com.fasterxml.jackson.databind.node.ObjectNode key = mapper.createObjectNode();
+                        com.fasterxml.jackson.databind.JsonNode facts = node.get("facts");
+                        if (facts != null && facts.isArray()) {
+                            for (com.fasterxml.jackson.databind.JsonNode f : facts) {
+                                String field = f.path("field").asText("");
+                                String value = f.path("value").asText("");
+                                if (!field.isEmpty() && !value.isEmpty() && !"Not stated".equals(value)) {
+                                    key.put(field, value);
+                                }
+                            }
+                        }
+                        node.set("keyFacts", key);
+                    } catch (Exception ignored) {
+                    }
+                }
+                results.add(ok);
+            } catch (Exception e) {
+                results.add(mapper.createObjectNode()
+                        .put("file", filename == null ? "unknown" : filename)
+                        .put("filename", filename == null ? "unknown" : filename)
+                        .put("status", "ERROR")
+                        .put("classification", "NOT_PROCESSED")
+                        .put("confidence", 0.0)
+                        .put("processingTimeMs", System.currentTimeMillis() - docStart)
+                        .put("humanReviewRequired", true)
+                        .put("message", e.getMessage() == null
+                                ? "Analysis failed" : e.getMessage()));
+            }
+        }
+
+        return results;
+    }
 }

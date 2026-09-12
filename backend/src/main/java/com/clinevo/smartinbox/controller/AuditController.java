@@ -15,7 +15,7 @@ public class AuditController {
     }
 
     @GetMapping
-    public Object audit() {
-        return repository.findAll();
+    public Object audit(@RequestParam(value = "analysisId", required = false) Long analysisId) {
+        if (analysisId != null) { return repository.findByAnalysisIdOrderByActionTimestampDesc(analysisId); } return repository.findAll();
     }
 }

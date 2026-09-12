@@ -12,14 +12,34 @@ import { FormsModule } from '@angular/forms';
 })
 export class App {
 
-  private readonly backendUrl =
-    'http://127.0.0.1:8080';
+  // Production-safe: override with window.__BACKEND_URL__ (env-injected at
+  // serve time) or localStorage 'clinevo_backend_url'; falls back to
+  // same-origin '' for deployed frontend+backend, then localhost for dev.
+  private backendUrl(): string {
+    const w = window as any;
+    const configured: string =
+      w.__BACKEND_URL__ ||
+      localStorage.getItem('clinevo_backend_url') ||
+      '';
+    if (configured) {
+      return configured.replace(/\/$/, '');
+    }
+    if (window.location.port === '4200') {
+      return 'http://localhost:8080';
+    }
+    return '';
+  }
+
+  backendLabel(): string {
+    return this.backendUrl() || '(same origin)';
+  }
 
   selectedFile: File | null = null;
   analysis: any = null;
 
   analyzing = false;
   reviewing = false;
+  backendOnline: boolean | null = null;
 
   message = 'Ready for review';
 
@@ -33,14 +53,14 @@ export class App {
 
   inbox = [
     {
-      subject: 'Adverse event report – Product A',
+      subject: 'Adverse event report â€“ Product A',
       sender: 'clinical@synthetic-health.test',
       category: 'Safety Report / ICSR',
       confidence: 0.92,
       status: 'Needs Review'
     },
     {
-      subject: 'Complaint: damaged package – Product B',
+      subject: 'Complaint: damaged package â€“ Product B',
       sender: 'quality@synthetic-health.test',
       category: 'Quality Complaint / PQC',
       confidence: 0.89,
@@ -62,7 +82,16 @@ export class App {
     }
   ];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.checkBackendHealth();
+  }
+
+  checkBackendHealth() {
+    this.http.get<any>(`${this.backendUrl()}/api/health`).subscribe({
+      next: () => (this.backendOnline = true),
+      error: () => (this.backendOnline = false),
+    });
+  }
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -97,7 +126,7 @@ export class App {
     formData.append('file', this.selectedFile);
 
     this.http.post<any>(
-      `${this.backendUrl}/api/analyze`,
+      `${this.backendUrl()}/api/analyze`,
       formData
     ).subscribe({
 
@@ -121,7 +150,7 @@ export class App {
         this.analyzing = false;
 
         this.message =
-          'Analysis completed — human review required.';
+          'Analysis completed â€“ human review required.';
       },
 
       error: (error) => {
@@ -203,7 +232,7 @@ export class App {
   reviewPriority(): string {
 
     if (!this.analysis) {
-      return '—';
+      return ' ';
     }
 
     const categories =
@@ -256,7 +285,9 @@ export class App {
     }
 
     if (this.lowConfidenceCount() > 0) {
-      reasons.push('One or more extracted facts have low confidence');
+      reasons.push(
+        'One or more extracted facts have low confidence'
+      );
     }
 
     if (this.evidenceCoverage() < 75) {
@@ -345,7 +376,7 @@ export class App {
     };
 
     this.http.post<any>(
-      `${this.backendUrl}/api/review`,
+      `${this.backendUrl()}/api/review`,
       payload
     ).subscribe({
 
@@ -359,8 +390,8 @@ export class App {
 
         this.message =
           action === 'ACCEPT'
-            ? '? AI decision accepted — reviewer action recorded.'
-            : '? Decision overridden — reviewer action recorded.';
+            ? 'âœ“ AI decision accepted â€“ reviewer action recorded.'
+            : 'â†» Decision overridden â€“ reviewer action recorded.';
       },
 
       error: (error) => {

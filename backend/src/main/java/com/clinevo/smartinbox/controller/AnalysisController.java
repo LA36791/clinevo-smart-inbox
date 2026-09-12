@@ -29,5 +29,11 @@ public class AnalysisController {
             throws Exception {
         return aiService.analyze(file.getBytes(), file.getOriginalFilename());
     }
+
+    @PostMapping(value="/analyze-batch", consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Object analyzeBatch(@RequestParam("files") java.util.List<MultipartFile> files)
+            throws Exception {
+        return aiService.analyzeBatch(files);
+    }
 }
 
