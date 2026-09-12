@@ -87,17 +87,34 @@ Verified results: see `docs/BATCH_RESULTS.md` and `docs/REQUIREMENTS_MATRIX.md`.
 - **Not stated policy**: missing information is never guessed; value "Not stated", confidence 0.0, no evidence.
 - **Evidence-first**: every fact carries value + confidence + source (type, id, page, snippet). Reviewer sees WHAT/WHY/WHERE/HOW CONFIDENT.
 - **AI vs reviewer distinction**: AI result persisted at analysis time; reviewer ACCEPT/OVERRIDE stored separately in REVIEW_ACTION with original AI value, final value, actor, notes, timestamp.
-- **Cloud AI data trade-off**: an LLM would improve ambiguous extraction but would send patient data to a third party. The current design keeps everything local; swapping in an LLM would require a data-processing agreement and should keep the deterministic evidence layer.
+- **LLM integration**: optional OpenAI-compatible LLM for document understanding, classification, and fact extraction. Configured via `LLM_API_KEY`, `LLM_API_BASE`, `LLM_MODEL`, `LLM_ENABLED` env vars. Falls back to deterministic provider when unavailable.
+- **Hybrid RAG**: page-aware chunking with BM25 retrieval. Chunks preserve document/page metadata and evidence location. No external vector database required.
+- **VLM routing**: scanned/image-heavy documents can be routed for visual understanding when VLM is available. Falls back to OCR/deterministic when unavailable.
+- **Cloud AI data trade-off**: LLM improves ambiguous extraction but sends data to a third party. Configured via environment variables; deterministic fallback always available.
+
+## Optional AI Configuration
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `LLM_API_KEY` | (none) | API key for OpenAI-compatible LLM |
+| `LLM_API_BASE` | `https://api.openai.com/v1` | LLM API base URL |
+| `LLM_MODEL` | `gpt-4o-mini` | Model name |
+| `LLM_ENABLED` | `false` | Enable LLM (requires API key) |
+
+When LLM is unavailable or disabled, the deterministic provider is used automatically.
 
 ## Limitations
-- Heuristic engine: no multi-column/table/image-description/translation handling beyond flagging.
-- Small synthetic dataset (2 PDFs); batch verified with 2 documents.
+- LLM requires API key and network access; deterministic fallback always available.
+- Table extraction is best-effort (pipe/space delimited).
+- Image detection only; visual interpretation requires VLM configuration.
+- Multi-column layout uses lightweight line reordering.
 - H2 file database is local-only; Oracle/managed DB is the production target (schema is portable SQL).
-- Frontend not hosted as a static site (build succeeds; API base URL configurable in `frontend/src/app/app.ts`).
 
 ## Deployment
+- Frontend: https://clinevo-smart-inbox-3.onrender.com
 - Backend: https://clinevo-smart-inbox.onrender.com (`/api/health` verified 200)
-- AI: https://clinevo-smart-inbox-2.onrender.com (`/health` verified 200)
+- AI: https://clinevo-smart-inbox-1.onrender.com (`/health` verified 200)
+- AI Swagger: https://clinevo-smart-inbox-1.onrender.com/docs
 
 ## Sample output (actual run)
 

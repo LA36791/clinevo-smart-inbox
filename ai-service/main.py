@@ -23,6 +23,10 @@ from pypdf import PdfReader
 from pdf2image import convert_from_bytes
 
 from models import AnalysisResult, ClassificationDecision, Evidence, ExtractedFact, PageResult
+from providers import DeterministicProvider
+
+# Initialize provider (LLM if available, deterministic fallback)
+provider = DeterministicProvider()
 
 app = FastAPI(
     title="Clinevo Smart Inbox AI Service",
@@ -70,13 +74,14 @@ def extract_value(text: str, label: str):
     pattern = (
         rf"(?<!\w){re.escape(label)}\s*[:\-]\s*"
         rf"(.*?)"
-        rf"(?=\s+(?:{label_pattern})(?:\s*[:\-]|\s)|$)"
+        rf"(?=\s+(?:{label_pattern})(?:\s*[\:\-]|\s)|\n|$)"
     )
 
     match = re.search(pattern, text, re.IGNORECASE | re.DOTALL)
 
     if match:
-        value = re.sub(r"\s+", " ", match.group(1)).strip(" :-")
+        value = re.sub(r"\s+", " ", match.group(1)).strip(" :-\n\r\t")
+        value = value.split("\n")[0].strip(" :-\n\r\t")
         return value if value else "Not stated"
 
     return "Not stated"
