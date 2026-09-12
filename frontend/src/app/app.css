@@ -545,3 +545,247 @@ button:disabled {
   }
 
 }
+
+/* ---- TABS ---- */
+.tabs {
+  display: flex;
+  gap: 4px;
+  padding: 0 36px;
+  background: white;
+  border-bottom: 1px solid #e4e8ef;
+}
+
+.tabs button {
+  background: transparent;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  padding: 14px 20px;
+  font-weight: 700;
+  color: #687386;
+  cursor: pointer;
+  border-radius: 0;
+}
+
+.tabs button.active {
+  color: #1d4ed8;
+  border-bottom-color: #1d4ed8;
+}
+
+/* ---- DASHBOARD ---- */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 24px 36px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dash-card {
+  background: white;
+  border: 1px solid #e0e5ed;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+}
+
+.dash-card.small {
+  grid-column: span 1;
+}
+
+.dash-card.wide {
+  grid-column: span 2;
+}
+
+.dash-card small {
+  display: block;
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.dash-value {
+  font-size: 32px;
+  font-weight: 800;
+  color: #1d4ed8;
+  margin-top: 8px;
+}
+
+.dash-card.safety .dash-value { color: #b42318; }
+.dash-card.pqc .dash-value { color: #a26a00; }
+.dash-card.mi .dash-value { color: #1d4ed8; }
+.dash-card.notrel .dash-value { color: #16834d; }
+
+/* ---- INBOX ENHANCED ---- */
+.mail {
+  cursor: pointer;
+  transition: background 0.15s;
+  padding: 14px 8px;
+  margin: 0 -8px;
+  border-radius: 8px;
+}
+
+.mail:hover {
+  background: #f4f7fb;
+}
+
+.mail.selected {
+  background: #e8f0fe;
+  border: 1px solid #b6d4fe;
+}
+
+.mail-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.mail-priority {
+  font-size: 9px;
+  font-weight: 800;
+  padding: 3px 7px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.mail-priority.priority-high { background: #fef2f2; color: #b42318; }
+.mail-priority.priority-medium { background: #fff8e8; color: #a26a00; }
+.mail-priority.priority-low { background: #ecfdf3; color: #16834d; }
+
+.mail-date {
+  float: right;
+  font-size: 10px;
+  color: #9ca3af;
+}
+
+.cat-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.cat-badge.cat-safety-report-icsr { background: #fef2f2; color: #b42318; }
+.cat-badge.cat-quality-complaint-pqc { background: #fff8e8; color: #a26a00; }
+.cat-badge.cat-info-request-mi { background: #eef4ff; color: #1d4ed8; }
+.cat-badge.cat-not-relevant { background: #ecfdf3; color: #16834d; }
+
+.mail-summary {
+  font-size: 11px;
+  color: #6b7280;
+  margin: 6px 0;
+  line-height: 1.4;
+}
+
+.mail-status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.mail-attachment {
+  font-size: 10px;
+  color: #6b7280;
+}
+
+/* ---- DECISION TRACE ---- */
+.decision-trace {
+  margin-top: 25px;
+  padding: 20px;
+  border: 1px solid #dbe3ef;
+  border-radius: 10px;
+  background: #fbfcfe;
+}
+
+.decision-trace small {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  color: #64748b;
+}
+
+.decision-trace h2 {
+  margin: 7px 0 15px;
+}
+
+.trace-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.trace-step {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid #edf0f5;
+}
+
+.trace-step:last-child {
+  border-bottom: 0;
+}
+
+.trace-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #e8f0fe;
+  color: #1d4ed8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.trace-step.highlight .trace-num {
+  background: #fff4d6;
+  color: #9a6500;
+}
+
+.trace-step.success .trace-num {
+  background: #ecfdf3;
+  color: #16834d;
+}
+
+.trace-step strong {
+  display: block;
+  font-size: 13px;
+}
+
+.trace-step span {
+  display: block;
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+@media (max-width: 900px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .dash-card.wide {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  .dash-card.wide {
+    grid-column: span 1;
+  }
+  .tabs {
+    flex-direction: column;
+  }
+  .tabs button {
+    width: 100%;
+    text-align: left;
+  }
+}
+}

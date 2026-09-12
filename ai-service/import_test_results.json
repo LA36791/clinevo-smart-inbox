@@ -1,0 +1,12 @@
+{
+  "providers": "OK",
+  "using_llm": false,
+  "using_rag": true,
+  "llm_provider": "OK",
+  "llm_available": false,
+  "rag": "OK",
+  "rag_chunks": 2,
+  "rag_retrieve": 1,
+  "extract_patient": "P-600",
+  "extract_fixed": true
+}

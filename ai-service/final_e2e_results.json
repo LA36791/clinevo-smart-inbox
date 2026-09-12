@@ -1,0 +1,133 @@
+{
+  "timestamp": "2026-09-12T20:19:43Z",
+  "tests": {
+    "ai_health": {
+      "status": "PASS",
+      "data": {
+        "status": "ok",
+        "service": "clinevo-smart-inbox-ai",
+        "version": "1.2.0"
+      }
+    },
+    "pdf_results": [
+      {
+        "file": "adversarial_001.pdf",
+        "status": "OK",
+        "category": "SAFETY_REPORT_ICSR",
+        "confidence": 0.8999999999999999,
+        "review": true
+      },
+      {
+        "file": "french_001.pdf",
+        "status": "OK",
+        "category": "SAFETY_REPORT_ICSR",
+        "confidence": 0.8999999999999999,
+        "review": true
+      },
+      {
+        "file": "mi_001.pdf",
+        "status": "OK",
+        "category": "INFO_REQUEST_MI",
+        "confidence": 0.8999999999999999,
+        "review": false
+      },
+      {
+        "file": "mi_002.pdf",
+        "status": "OK",
+        "category": "INFO_REQUEST_MI",
+        "confidence": 0.8999999999999999,
+        "review": false
+      },
+      {
+        "file": "notrel_001.pdf",
+        "status": "OK",
+        "category": "NOT_RELEVANT",
+        "confidence": 0.8999999999999999,
+        "review": false
+      },
+      {
+        "file": "notrel_002.pdf",
+        "status": "OK",
+        "category": "NOT_RELEVANT",
+        "confidence": 0.8999999999999999,
+        "review": false
+      },
+      {
+        "file": "pqc_001.pdf",
+        "status": "OK",
+        "category": "QUALITY_COMPLAINT_PQC",
+        "confidence": 0.8999999999999999,
+        "review": true
+      },
+      {
+        "file": "pqc_002.pdf",
+        "status": "OK",
+        "category": "QUALITY_COMPLAINT_PQC",
+        "confidence": 0.8999999999999999,
+        "review": true
+      },
+      {
+        "file": "safety_001.pdf",
+        "status": "OK",
+        "category": "SAFETY_REPORT_ICSR",
+        "confidence": 0.8999999999999999,
+        "review": false
+      },
+      {
+        "file": "safety_002.pdf",
+        "status": "OK",
+        "category": "SAFETY_REPORT_ICSR",
+        "confidence": 0.8999999999999999,
+        "review": true
+      },
+      {
+        "file": "safety_003.pdf",
+        "status": "OK",
+        "category": "SAFETY_REPORT_ICSR",
+        "confidence": 0.8999999999999999,
+        "review": true
+      },
+      {
+        "file": "scanned_case.pdf",
+        "status": "OK",
+        "category": "SAFETY_REPORT_ICSR",
+        "confidence": 0.8999999999999999,
+        "review": true
+      },
+      {
+        "file": "spanish_001.pdf",
+        "status": "OK",
+        "category": "NOT_RELEVANT",
+        "confidence": 0.8999999999999999,
+        "review": true
+      },
+      {
+        "file": "synthetic_case.pdf",
+        "status": "OK",
+        "category": "SAFETY_REPORT_ICSR",
+        "confidence": 0.8999999999999999,
+        "review": true
+      },
+      {
+        "file": "table_001.pdf",
+        "status": "OK",
+        "category": "NOT_RELEVANT",
+        "confidence": 0.8999999999999999,
+        "review": false
+      }
+    ],
+    "pdf_total": 15,
+    "pdf_success": 15,
+    "backend_health": {
+      "status": "PASS",
+      "data": {
+        "service": "Clinevo Smart Inbox Backend",
+        "status": "UP"
+      }
+    },
+    "backend_analyze": {
+      "status": "PASS",
+      "analysisId": 74
+    }
+  }
+}

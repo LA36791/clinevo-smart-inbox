@@ -386,60 +386,40 @@ def analyze_text(
         "NOT_RELEVANT": 0.0,
     }
 
-    safety_terms = [
-        "safety report",
-        "adverse event",
-        "adverse reaction",
-        "reaction",
-        "patient",
-        "severity",
-        "serious",
-        "non-serious",
-    ]
+    # Weighted scoring: stronger terms get higher weights
+    safety_terms = {
+        "safety report": 3, "adverse event": 3, "adverse reaction": 3,
+        "patient": 2, "reaction": 2, "severity": 2,
+        "serious": 1, "non-serious": 1, "nausea": 1, "headache": 1,
+        "rash": 1, "vomiting": 1,
+    }
 
-    pqc_terms = [
-        "quality complaint",
-        "complaint",
-        "product defect",
-        "defective",
-        "damaged",
-        "broken",
-        "leak",
-        "leaking",
-        "missing tablet",
-        "packaging defect",
-        "wrong label",
-    ]
+    pqc_terms = {
+        "quality complaint": 3, "complaint": 2, "product defect": 3,
+        "defective": 2, "damaged": 2, "broken": 2, "leak": 2,
+        "leaking": 2, "missing tablet": 2, "packaging defect": 3,
+        "wrong label": 2, "discoloration": 2, "foreign particle": 3,
+    }
 
-    mi_terms = [
-        "information request",
-        "medical information",
-        "question",
-        "asking",
-        "inquiry",
-        "dose",
-        "dosing",
-        "dosage",
-        "indication",
-        "contraindication",
-        "advise",
-        "store",
-        "storage",
-        "administration",
-        "interaction",
-    ]
+    mi_terms = {
+        "information request": 3, "medical information": 3,
+        "question": 1, "asking": 1, "inquiry": 2,
+        "dose": 2, "dosing": 2, "dosage": 2, "indication": 2,
+        "contraindication": 2, "advise": 2, "store": 1,
+        "storage": 1, "administration": 2, "interaction": 2,
+    }
 
-    for term in safety_terms:
+    for term, weight in safety_terms.items():
         if term in normalized:
-            scores["SAFETY_REPORT_ICSR"] += 1
+            scores["SAFETY_REPORT_ICSR"] += weight
 
-    for term in pqc_terms:
+    for term, weight in pqc_terms.items():
         if term in normalized:
-            scores["QUALITY_COMPLAINT_PQC"] += 1
+            scores["QUALITY_COMPLAINT_PQC"] += weight
 
-    for term in mi_terms:
+    for term, weight in mi_terms.items():
         if term in normalized:
-            scores["INFO_REQUEST_MI"] += 1
+            scores["INFO_REQUEST_MI"] += weight
 
     if max(scores.values()) == 0:
         scores["NOT_RELEVANT"] = 1.0
@@ -453,20 +433,24 @@ def analyze_text(
             scores['NOT_RELEVANT'] = 1.0
         max_score = max(scores.values())
 
-    # Boost MI when a genuine question is present and MI indicators exist.
-    # This prevents "patient" in question context (e.g., "in elderly patients")
-    # from incorrectly dominating as a safety report.
+    # Boost MI when a genuine question is present
     if scores.get('INFO_REQUEST_MI', 0) > 0 and is_genuine_question(text):
-        scores['INFO_REQUEST_MI'] += 2
+        scores['INFO_REQUEST_MI'] += 3
         max_score = max(scores.values())
+
     for category, score in scores.items():
         if score <= 0:
             continue
 
-        confidence = min(
-            0.99,
-            0.60 + (score / max(max_score, 1)) * 0.30,
-        )
+        # Differentiated confidence based on evidence strength
+        if score >= 6:
+            confidence = min(0.97, 0.85 + (score / max(max_score * 2, 1)) * 0.12)
+        elif score >= 3:
+            confidence = min(0.85, 0.70 + (score / max(max_score, 1)) * 0.15)
+        elif score >= 2:
+            confidence = min(0.70, 0.55 + (score / max(max_score, 1)) * 0.15)
+        else:
+            confidence = max(0.30, 0.40 + (score / max(max_score, 1)) * 0.15)
 
         if category == "SAFETY_REPORT_ICSR":
             reason = "Safety/adverse-event indicators were detected."
@@ -480,7 +464,7 @@ def analyze_text(
         categories.append(
             ClassificationDecision(
                 category=category,
-                confidence=confidence,
+                confidence=round(confidence, 2),
                 reason=reason,
                 evidence=[
                     evidence(

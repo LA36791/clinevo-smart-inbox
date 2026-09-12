@@ -25,11 +25,73 @@
   </div>
 </section>
 
-<main class="layout">
+<nav class="tabs">
+  <button
+    [class.active]="activeTab === 'inbox'"
+    (click)="activeTab = 'inbox'; analysis = null"
+  >
+    INBOX ({{ inbox.length }})
+  </button>
+  <button
+    [class.active]="activeTab === 'dashboard'"
+    (click)="activeTab = 'dashboard'"
+  >
+    DASHBOARD
+  </button>
+  <button
+    [class.active]="activeTab === 'workspace'"
+    (click)="activeTab = 'workspace'"
+  >
+    WORKSPACE
+  </button>
+</nav>
 
-  <!-- ====================================================== -->
-  <!-- INBOX -->
-  <!-- ====================================================== -->
+<!-- ====================================================== -->
+<!-- DASHBOARD -->
+<!-- ====================================================== -->
+
+<main class="layout" *ngIf="activeTab === 'dashboard'">
+  <div class="dashboard-grid">
+    <div class="dash-card">
+      <small>TOTAL PROCESSED</small>
+      <div class="dash-value">{{ dashboard.totalProcessed }}</div>
+    </div>
+    <div class="dash-card safety">
+      <small>SAFETY / ICSR</small>
+      <div class="dash-value">{{ dashboard.safetyCount }}</div>
+    </div>
+    <div class="dash-card pqc">
+      <small>QUALITY / PQC</small>
+      <div class="dash-value">{{ dashboard.pqcCount }}</div>
+    </div>
+    <div class="dash-card mi">
+      <small>INFO REQUESTS</small>
+      <div class="dash-value">{{ dashboard.miCount }}</div>
+    </div>
+    <div class="dash-card notrel">
+      <small>NOT RELEVANT</small>
+      <div class="dash-value">{{ dashboard.notRelevantCount }}</div>
+    </div>
+    <div class="dash-card">
+      <small>REVIEW REQUIRED</small>
+      <div class="dash-value">{{ dashboard.reviewRequired }}</div>
+    </div>
+    <div class="dash-card wide">
+      <small>AVG CONFIDENCE</small>
+      <div class="dash-value">{{ dashboard.avgProcessingTime * 100 | number:'1.0-0' }}%</div>
+    </div>
+    <div class="dash-card wide">
+      <small>EVIDENCE COVERAGE</small>
+      <div class="dash-value">{{ analysis ? evidenceCoverage() : '—' }}%</div>
+    </div>
+  </div>
+</main>
+
+<!-- ====================================================== -->
+<!-- INBOX -->
+<!-- ====================================================== -->
+
+<main class="layout" *ngIf="activeTab === 'inbox'">
 
   <aside class="inbox card">
 
@@ -46,7 +108,9 @@
 
     <div
       class="mail"
-      *ngFor="let item of inbox"
+      *ngFor="let item of inbox; let i = index"
+      [class.selected]="selectedInboxItem === i"
+      (click)="selectInboxItem(i)"
     >
 
       <div class="mail-top">
@@ -54,28 +118,39 @@
           {{ item.subject }}
         </strong>
 
+        <span class="mail-priority" [ngClass]="priorityClass(item.priority)">
+          {{ item.priority }}
+        </span>
+      </div>
+
+      <div class="mail-sender">
+        {{ item.sender }}
+        <span class="mail-date">{{ item.receivedAt | date:'short' }}</span>
+      </div>
+
+      <div class="mail-bottom">
+        <span class="cat-badge" [ngClass]="categoryClass(item.category)">
+          {{ item.categoryLabel }}
+        </span>
+        <em>
+          {{ confidence(item.confidence) }}%
+        </em>
+      </div>
+
+      <div class="mail-summary" *ngIf="item.summary">
+        {{ item.summary }}
+      </div>
+
+      <div class="mail-status-row">
         <span
           class="mail-status"
           [class.reviewed]="item.status === 'Reviewed'"
         >
           {{ item.status }}
         </span>
-      </div>
-
-      <div class="mail-sender">
-        {{ item.sender }}
-      </div>
-
-      <div class="mail-bottom">
-
-        <span>
-          {{ item.category }}
+        <span class="mail-attachment" *ngIf="item.attachment">
+          &#128206; {{ item.attachment }}
         </span>
-
-        <em>
-          {{ confidence(item.confidence) }}%
-        </em>
-
       </div>
 
     </div>
@@ -87,12 +162,11 @@
 
   </aside>
 
-
   <!-- ====================================================== -->
   <!-- WORKSPACE -->
   <!-- ====================================================== -->
 
-  <section class="workspace">
+  <section class="workspace" *ngIf="selectedInboxItem !== null || analysis">
 
     <div class="upload-card card">
 
@@ -376,6 +450,70 @@
 
         </div>
 
+      </section>
+
+
+      <!-- ================================================== -->
+      <!-- DECISION TRACE -->
+      <!-- ================================================== -->
+
+      <section class="decision-trace" *ngIf="analysis">
+        <small>
+          DECISION TRACE
+        </small>
+        <h2>Why this classification?</h2>
+
+        <div class="trace-timeline">
+          <div class="trace-step">
+            <span class="trace-num">1</span>
+            <div>
+              <strong>Document Ingested</strong>
+              <span>{{ analysis.document_type }} · {{ analysis.page_count || 1 }} page(s)</span>
+            </div>
+          </div>
+          <div class="trace-step">
+            <span class="trace-num">2</span>
+            <div>
+              <strong>Text Extracted</strong>
+              <span>{{ analysis.extracted_text?.length || 0 }} characters</span>
+            </div>
+          </div>
+          <div class="trace-step" *ngIf="analysis.ocr_confidence">
+            <span class="trace-num">3</span>
+            <div>
+              <strong>OCR Applied</strong>
+              <span>Confidence: {{ confidence(analysis.ocr_confidence) }}%</span>
+            </div>
+          </div>
+          <div class="trace-step">
+            <span class="trace-num">{{ analysis.ocr_confidence ? 4 : 3 }}</span>
+            <div>
+              <strong>Evidence Retrieved</strong>
+              <span>{{ totalFactCount() }} facts extracted</span>
+            </div>
+          </div>
+          <div class="trace-step">
+            <span class="trace-num">{{ analysis.ocr_confidence ? 5 : 4 }}</span>
+            <div>
+              <strong>Classification</strong>
+              <span>{{ categoryLabel(primaryCategory()) }} · {{ confidence(analysis.categories[0]?.confidence || 0) }}%</span>
+            </div>
+          </div>
+          <div class="trace-step highlight" *ngIf="analysis.human_review_required">
+            <span class="trace-num">!</span>
+            <div>
+              <strong>Human Review Required</strong>
+              <span>{{ whyFlagged() }}</span>
+            </div>
+          </div>
+          <div class="trace-step success" *ngIf="!analysis.human_review_required">
+            <span class="trace-num">&#10003;</span>
+            <div>
+              <strong>Auto-Processed</strong>
+              <span>High confidence - no review needed</span>
+            </div>
+          </div>
+        </div>
       </section>
 
 
