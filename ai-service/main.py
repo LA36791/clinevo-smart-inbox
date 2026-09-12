@@ -225,6 +225,92 @@ def detect_image_references(text: str, image_count: int = 0):
     return found, image_count
 
 
+def enhance_narrative_facts(text: str, facts: list) -> list:
+    """Fill 'Not stated' facts from narrative patient-case patterns and append
+    additional values so cross-mention contradictions are preserved.
+
+    Conservative patient-subject patterns only; label-based extraction (higher
+    confidence) is never overridden. Extra values are appended as separate facts
+    so the evidence engine can flag the resulting contradiction.
+    """
+
+    def _clean(v: str) -> str:
+        v = re.sub(r"\s+", " ", v or "")
+        return v.strip(" \t\r\n.,;:-")
+
+    pat_developed = re.compile(
+        r"(?:Patient|patient)\s+developed\s+(?P<reaction>.+?)\s+after\s+"
+        r"(?P<product>[A-Z][A-Za-z0-9]+(?:\s+[A-Z][A-Za-z0-9]+)*)",
+        re.IGNORECASE,
+    )
+    pat_experienced = re.compile(
+        r"(?:Patient|patient)\s+experienced\s+(?P<reaction>"
+        r"nausea|vomiting|headache|rash|dizziness|fainting|diarrhoea|diarrhea|"
+        r"fatigue|pain|shortness of breath|swelling|itching|bleeding|confusion|"
+        r"seizure|chest pain|abdominal pain|fever|chills|palpitations"
+        r")",
+        re.IGNORECASE,
+    )
+    pat_received = re.compile(
+        r"(?:Patient|patient)\s+received\s+(?P<product>[A-Z][A-Za-z0-9]+(?:\s+[A-Z][A-Za-z0-9]+)*)\s+for",
+        re.IGNORECASE,
+    )
+
+    m_dev = pat_developed.search(text)
+    m_exp = pat_experienced.search(text)
+    m_rec = pat_received.search(text)
+
+    if not (m_dev or m_exp or m_rec):
+        return facts
+
+    additions: dict[str, list[tuple[str, float, str]]] = {}
+    if m_dev:
+        rv = _clean(m_dev.group("reaction"))
+        pv = _clean(m_dev.group("product"))
+        if rv and rv != "Not stated":
+            additions.setdefault("reaction", []).append((rv, 0.78, m_dev.group(0)))
+        if pv and pv != "Not stated":
+            additions.setdefault("product", []).append((pv, 0.78, m_dev.group(0)))
+    if m_exp:
+        rv = _clean(m_exp.group("reaction"))
+        if rv and rv != "Not stated":
+            additions.setdefault("reaction", []).append((rv, 0.78, m_exp.group(0)))
+    if m_rec:
+        pv = _clean(m_rec.group("product"))
+        if pv and pv != "Not stated":
+            additions.setdefault("product", []).append((pv, 0.78, m_rec.group(0)))
+
+    if not additions:
+        return facts
+
+    result = list(facts)
+    for field, values in additions.items():
+        existing = [f for f in result if f.field == field]
+        not_stated = [f for f in existing if f.value == "Not stated" or not f.value]
+
+        for i, (value, conf, snippet) in enumerate(values):
+            if i < len(not_stated):
+                f = not_stated[i]
+                f.value = value
+                f.confidence = max(float(f.confidence), conf)
+                f.evidence.append(
+                    evidence("PDF", "document", snippet, confidence=conf)
+                )
+            else:
+                result.append(
+                    ExtractedFact(
+                        field=field,
+                        value=value,
+                        confidence=conf,
+                        evidence=[
+                            evidence("PDF", "document", snippet, confidence=conf)
+                        ],
+                    )
+                )
+
+    return result
+
+
 def reorder_multicolumn_lines(text: str) -> str:
     """Light multi-column repair: split very wide double-gap lines.
 
@@ -444,6 +530,8 @@ def analyze_text(
             extraction_confidence,
         ),
     ]
+
+    facts = enhance_narrative_facts(text, facts)
 
     scores = {
         "SAFETY_REPORT_ICSR": 0.0,

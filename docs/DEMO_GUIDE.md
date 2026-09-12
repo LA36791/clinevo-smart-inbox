@@ -24,4 +24,4 @@ cd frontend && npm start
 - Missing data is "Not stated", never guessed; confidence 0.0.
 - AI proposes, human decides; AI result and reviewer result are both persisted.
 - OCR is local (Tesseract + Poppler) — no document content leaves the machine.
-- Deployed: backend https://clinevo-smart-inbox.onrender.com, AI https://clinevo-smart-inbox-2.onrender.com (both health-checked 200).
+- Deployed: backend https://clinevo-smart-inbox.onrender.com, AI https://clinevo-smart-inbox-1.onrender.com (both health-checked 200).
