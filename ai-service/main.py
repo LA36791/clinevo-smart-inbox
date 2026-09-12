@@ -24,9 +24,13 @@ from pdf2image import convert_from_bytes
 
 from models import AnalysisResult, ClassificationDecision, Evidence, ExtractedFact, PageResult
 from providers import DeterministicProvider
+from evidence_engine import EvidenceEngine, compute_evidence_summary
 
 # Initialize provider (LLM if available, deterministic fallback)
 provider = DeterministicProvider()
+
+# Initialize evidence engine
+evidence_engine = EvidenceEngine()
 
 app = FastAPI(
     title="Clinevo Smart Inbox AI Service",
@@ -53,19 +57,16 @@ def evidence(source_type: str, source_id: str, text: str, page=None, confidence=
 
 def extract_value(text: str, label: str):
     labels = [
-        "Patient ID",
-        "Patient",
-        "Reporter",
-        "Product",
-        "Reaction",
-        "Severity",
-        "Batch",
-        "Lot",
-        "Question",
-        "Actual Question",
-        "Issue",
-        "Topic",
-        "Narrative",
+        "Patient ID", "Patient", "Paciente",
+        "Reporter", "Declarante",
+        "Product", "Producto",
+        "Reaction", "Reaccion", "Reacción",
+        "Severity", "Gravedad", "Gravite", "Gravité",
+        "Batch", "Lot", "Lote",
+        "Question", "Actual Question", "Pregunta",
+        "Issue", "Problem", "Problema",
+        "Topic", "Tema",
+        "Narrative", "Narrativa",
     ]
 
     other_labels = [item for item in labels if item.lower() != label.lower()]
@@ -84,6 +85,20 @@ def extract_value(text: str, label: str):
         value = value.split("\n")[0].strip(" :-\n\r\t")
         return value if value else "Not stated"
 
+    return "Not stated"
+
+
+def extract_value_any(text: str, *labels):
+    """Try each label variant in order (multilingual labels, no translation).
+
+    Values are read from the original document text; only the label used to
+    locate them varies per language. Original text is always preserved as
+    evidence.
+    """
+    for label in labels:
+        value = extract_value(text, label)
+        if value != "Not stated":
+            return value
     return "Not stated"
 
 
@@ -235,6 +250,59 @@ def reorder_multicolumn_lines(text: str) -> str:
     return "\n".join(left + ["", "[Right column continuation]"] + right)
 
 
+def rag_page_attribution(result, page_texts, source_id: str) -> dict:
+    """BM25 RAG fallback for evidence page attribution.
+
+    The primary page mapping is a direct substring scan over page texts.
+    For any fact whose evidence is still unattributed (no page), this uses
+    HybridRAG (page-aware chunking + BM25 retrieval) to locate the most
+    likely source page. Classification and extraction are unchanged; the
+    original text is preserved and retrieval scores are recorded.
+    """
+    try:
+        from rag import HybridRAG
+
+        pages = [
+            PageResult(page=i + 1, text=t, confidence=0.95, source="PDF")
+            for i, t in enumerate(page_texts)
+            if t
+        ]
+        if not pages:
+            return {"used": False, "reason": "no_indexable_pages"}
+
+        rag = HybridRAG()
+        rag.index_pages(pages, source_type="PDF", source_id=source_id)
+
+        attributed = 0
+        scores = []
+        for fact in result.facts:
+            value = str(fact.value).strip()
+            if not value or value == "Not stated" or not fact.evidence:
+                continue
+            if any(e.page for e in fact.evidence):
+                continue  # already attributed by the direct scan
+            hits = rag.retrieve(value, top_k=1)
+            if hits and hits[0].score > 0:
+                page_num = hits[0].page
+                scores.append(round(hits[0].score, 4))
+                for e in fact.evidence:
+                    if e.page is None:
+                        e.page = page_num
+                attributed += 1
+
+        return {
+            "used": True,
+            "algorithm": "BM25",
+            "embeddings_used": False,
+            "chunks_indexed": len(rag.chunks),
+            "pages_indexed": len(pages),
+            "facts_attributed": attributed,
+            "top_scores": scores[:5],
+        }
+    except Exception as exc:  # RAG must never break the analysis pipeline
+        return {"used": False, "error": type(exc).__name__}
+
+
 def snip(text: str, limit: int = 500) -> str:
     s = re.sub(r"\s+", " ", text or "").strip()
     return s[:limit]
@@ -251,18 +319,16 @@ def analyze_text(
 
     normalized = text.lower()
 
-    patient = extract_value(text, "Patient")
-    if patient == "Not stated":
-        patient = extract_value(text, "Patient ID")
-    product = extract_value(text, "Product")
-    reaction = extract_value(text, "Reaction")
-    severity = extract_value(text, "Severity")
-    batch = extract_value(text, "Batch")
-    question = extract_value(text, "Question")
-    reporter = extract_value(text, "Reporter")
-    issue = extract_value(text, "Issue")
-    topic = extract_value(text, "Topic")
-    narrative = extract_value(text, "Narrative")
+    patient = extract_value_any(text, "Patient", "Patient ID", "Paciente")
+    product = extract_value_any(text, "Product", "Producto")
+    reaction = extract_value_any(text, "Reaction", "Reaccion", "Reacción")
+    severity = extract_value_any(text, "Severity", "Gravedad", "Gravite", "Gravité")
+    batch = extract_value_any(text, "Batch", "Lot", "Lote")
+    question = extract_value_any(text, "Question", "Actual Question", "Pregunta")
+    reporter = extract_value_any(text, "Reporter", "Declarante")
+    issue = extract_value_any(text, "Issue", "Problem", "Problema")
+    topic = extract_value_any(text, "Topic", "Tema")
+    narrative = extract_value_any(text, "Narrative", "Narrativa")
 
     photo_terms = ("photo", "photograph", "image attached", "picture attached")
     photo_mentioned = (
@@ -392,6 +458,13 @@ def analyze_text(
         "patient": 2, "reaction": 2, "severity": 2,
         "serious": 1, "non-serious": 1, "nausea": 1, "headache": 1,
         "rash": 1, "vomiting": 1,
+        # Non-English safety indicators (Spanish / French): original text is
+        # preserved untranslated, so classification must work on it directly.
+        "evento adverso": 3, "efecto adverso": 3, "efecto indeseable": 3,
+        "reaccion adversa": 3, "reacción adversa": 3,
+        "paciente": 2, "reaccion": 2, "reacción": 2, "gravedad": 2,
+        "effet indesirable": 3, "effet indésirable": 3,
+        "réaction": 2, "gravité": 2, "gravite": 2,
     }
 
     pqc_terms = {
@@ -399,6 +472,7 @@ def analyze_text(
         "defective": 2, "damaged": 2, "broken": 2, "leak": 2,
         "leaking": 2, "missing tablet": 2, "packaging defect": 3,
         "wrong label": 2, "discoloration": 2, "foreign particle": 3,
+        "batch quality": 2,
     }
 
     mi_terms = {
@@ -654,6 +728,10 @@ async def analyze_document(file: UploadFile = File(...)):
                                 ev.page = page_number
                             break
 
+            # RAG fallback: BM25 page attribution for evidence the direct
+            # scan could not locate, plus retrieval statistics.
+            rag_stats = rag_page_attribution(result, page_texts, filename)
+
             result.document_type = "DIGITAL_TEXT_PDF"
             result.page_count = len(page_texts)
             result.extracted_text = combined_text
@@ -668,6 +746,16 @@ async def analyze_document(file: UploadFile = File(...)):
             result.processing_time_ms = int(
                 (time.perf_counter() - start) * 1000
             )
+
+            # Compute evidence summary
+            result.evidence_summary = compute_evidence_summary(result)
+            result.evidence_summary["rag_retrieval"] = rag_stats
+
+            # Prompt-injection defense: injected document text is treated as
+            # content only. It never changes classification, but it routes
+            # the document to human review.
+            if (result.evidence_summary.get("prompt_injection") or {}).get("injection_detected"):
+                result.human_review_required = True
 
             return result
 
@@ -839,6 +927,20 @@ async def analyze_document(file: UploadFile = File(...)):
         result.processing_time_ms = int(
             (time.perf_counter() - start) * 1000
         )
+
+        # RAG fallback: BM25 page attribution for evidence the direct scan
+        # could not locate, plus retrieval statistics.
+        rag_stats = rag_page_attribution(result, [t for _, t, _ in ocr_pages if t], filename)
+
+        # Compute evidence summary
+        result.evidence_summary = compute_evidence_summary(result)
+        result.evidence_summary["rag_retrieval"] = rag_stats
+
+        # Prompt-injection defense: injected document text is treated as
+        # content only. It never changes classification, but it routes
+        # the document to human review.
+        if (result.evidence_summary.get("prompt_injection") or {}).get("injection_detected"):
+            result.human_review_required = True
 
         return result
 

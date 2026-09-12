@@ -1,0 +1,26 @@
+{
+  "backend_analyze": {
+    "analysisId": 75,
+    "category": "SAFETY_REPORT_ICSR",
+    "hasEvidenceSummary": true
+  },
+  "backend_analyze_pqc": {
+    "analysisId": 76,
+    "category": "QUALITY_COMPLAINT_PQC"
+  },
+  "review_accept": {
+    "id": 40,
+    "status": "PASS"
+  },
+  "review_override": {
+    "id": 41,
+    "status": "PASS"
+  },
+  "audit": {
+    "entries": 2,
+    "has_timestamp": false
+  },
+  "history": {
+    "error": "HTTP Error 404: "
+  }
+}

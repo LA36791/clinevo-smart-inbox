@@ -1,7 +1,8 @@
 {
-  "timestamp": "2026-09-12T20:19:43Z",
+  "timestamp": "2026-09-12T21:57:37Z",
+  "ai_url": "http://127.0.0.1:8002",
   "tests": {
-    "ai_health": {
+    "health": {
       "status": "PASS",
       "data": {
         "status": "ok",
@@ -9,125 +10,2875 @@
         "version": "1.2.0"
       }
     },
-    "pdf_results": [
+    "batch": [
       {
         "file": "adversarial_001.pdf",
         "status": "OK",
+        "document_type": "DIGITAL_TEXT_PDF",
         "category": "SAFETY_REPORT_ICSR",
-        "confidence": 0.8999999999999999,
-        "review": true
+        "confidence": 0.85,
+        "multi_label": [
+          "SAFETY_REPORT_ICSR"
+        ],
+        "review_required": true,
+        "language_flag": "en",
+        "ocr_confidence": null,
+        "page_count": 1,
+        "coverage": {
+          "total_claims": 0,
+          "supported": 0,
+          "unsupported": 0,
+          "coverage_percent": 0.0
+        },
+        "completeness": {
+          "present": [],
+          "missing": [
+            "patient_id",
+            "product",
+            "reaction",
+            "severity",
+            "batch",
+            "reporter",
+            "narrative"
+          ],
+          "required_present": [],
+          "required_missing": [
+            "patient_id",
+            "product",
+            "reaction"
+          ],
+          "completeness_percent": 0.0
+        },
+        "reliability": "LOW",
+        "review_priority": "HIGH",
+        "route": "PDF \u2192 RAG \u2192 Rules",
+        "rag": {
+          "used": true,
+          "algorithm": "BM25",
+          "embeddings_used": false,
+          "chunks_indexed": 1,
+          "pages_indexed": 1,
+          "facts_attributed": 0,
+          "top_scores": []
+        },
+        "injection": {
+          "injection_detected": false,
+          "patterns_found": [],
+          "risk_level": "LOW"
+        },
+        "contradictions": 0,
+        "avg_confidence": 0.0,
+        "facts": {
+          "patient_id": "Not stated",
+          "product": "Not stated",
+          "reaction": "Not stated",
+          "severity": "Not stated",
+          "batch": "Not stated",
+          "actual_question": "Not stated",
+          "reporter": "Not stated",
+          "narrative": "Not stated",
+          "issue": "Not stated",
+          "photo_mentioned": "Not stated",
+          "mi_topic": "Not stated",
+          "table_rows": "Not stated",
+          "image_reference": "Not stated"
+        },
+        "facts_full": [
+          {
+            "field": "patient_id",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "product",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "reaction",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "severity",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "batch",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "actual_question",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "reporter",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "narrative",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "issue",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "photo_mentioned",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "mi_topic",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "table_rows",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "image_reference",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          }
+        ],
+        "core_evidence_pages_ok": true,
+        "processing_ms": 17,
+        "expected": "SAFETY_REPORT_ICSR",
+        "correct": true
       },
       {
         "file": "french_001.pdf",
         "status": "OK",
+        "document_type": "DIGITAL_TEXT_PDF",
         "category": "SAFETY_REPORT_ICSR",
-        "confidence": 0.8999999999999999,
-        "review": true
+        "confidence": 0.91,
+        "multi_label": [
+          "SAFETY_REPORT_ICSR"
+        ],
+        "review_required": true,
+        "language_flag": "non-en",
+        "ocr_confidence": null,
+        "page_count": 1,
+        "coverage": {
+          "total_claims": 4,
+          "supported": 4,
+          "unsupported": 0,
+          "coverage_percent": 100.0
+        },
+        "completeness": {
+          "present": [
+            "patient_id",
+            "reaction",
+            "severity",
+            "batch"
+          ],
+          "missing": [
+            "product",
+            "reporter",
+            "narrative"
+          ],
+          "required_present": [
+            "patient_id",
+            "reaction"
+          ],
+          "required_missing": [
+            "product"
+          ],
+          "completeness_percent": 57.1
+        },
+        "reliability": "HIGH",
+        "review_priority": "HIGH",
+        "route": "PDF \u2192 RAG \u2192 Rules",
+        "rag": {
+          "used": true,
+          "algorithm": "BM25",
+          "embeddings_used": false,
+          "chunks_indexed": 1,
+          "pages_indexed": 1,
+          "facts_attributed": 0,
+          "top_scores": []
+        },
+        "injection": {
+          "injection_detected": false,
+          "patterns_found": [],
+          "risk_level": "LOW"
+        },
+        "contradictions": 0,
+        "avg_confidence": 0.95,
+        "facts": {
+          "patient_id": "P-600",
+          "product": "Not stated",
+          "reaction": "Nausee",
+          "severity": "Serieux",
+          "batch": "LOT-600",
+          "actual_question": "Not stated",
+          "reporter": "Not stated",
+          "narrative": "Not stated",
+          "issue": "Not stated",
+          "photo_mentioned": "Not stated",
+          "mi_topic": "Not stated",
+          "table_rows": "Not stated",
+          "image_reference": "Not stated"
+        },
+        "facts_full": [
+          {
+            "field": "patient_id",
+            "value": "P-600",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "french_001.pdf",
+                "page": 1,
+                "text": "[Page 1] Rapport d'Effet Indesirable\nPatient: P-600\nProduit: Produit B\nReaction: Nausee\nGravite: Serieux\nLot: LOT-600",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "product",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "reaction",
+            "value": "Nausee",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "french_001.pdf",
+                "page": 1,
+                "text": "[Page 1] Rapport d'Effet Indesirable\nPatient: P-600\nProduit: Produit B\nReaction: Nausee\nGravite: Serieux\nLot: LOT-600",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "severity",
+            "value": "Serieux",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "french_001.pdf",
+                "page": 1,
+                "text": "[Page 1] Rapport d'Effet Indesirable\nPatient: P-600\nProduit: Produit B\nReaction: Nausee\nGravite: Serieux\nLot: LOT-600",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "batch",
+            "value": "LOT-600",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "french_001.pdf",
+                "page": 1,
+                "text": "[Page 1] Rapport d'Effet Indesirable\nPatient: P-600\nProduit: Produit B\nReaction: Nausee\nGravite: Serieux\nLot: LOT-600",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "actual_question",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "reporter",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "narrative",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "issue",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "photo_mentioned",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "mi_topic",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "table_rows",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "image_reference",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          }
+        ],
+        "core_evidence_pages_ok": true,
+        "processing_ms": 2,
+        "expected": "SAFETY_REPORT_ICSR",
+        "correct": true
       },
       {
         "file": "mi_001.pdf",
         "status": "OK",
+        "document_type": "DIGITAL_TEXT_PDF",
         "category": "INFO_REQUEST_MI",
-        "confidence": 0.8999999999999999,
-        "review": false
+        "confidence": 0.91,
+        "multi_label": [
+          "INFO_REQUEST_MI"
+        ],
+        "review_required": false,
+        "language_flag": "en",
+        "ocr_confidence": null,
+        "page_count": 1,
+        "coverage": {
+          "total_claims": 3,
+          "supported": 3,
+          "unsupported": 0,
+          "coverage_percent": 100.0
+        },
+        "completeness": {
+          "present": [
+            "actual_question",
+            "mi_topic"
+          ],
+          "missing": [
+            "product"
+          ],
+          "required_present": [
+            "actual_question"
+          ],
+          "required_missing": [],
+          "completeness_percent": 66.7
+        },
+        "reliability": "HIGH",
+        "review_priority": "LOW",
+        "route": "PDF \u2192 RAG \u2192 Rules",
+        "rag": {
+          "used": true,
+          "algorithm": "BM25",
+          "embeddings_used": false,
+          "chunks_indexed": 1,
+          "pages_indexed": 1,
+          "facts_attributed": 0,
+          "top_scores": []
+        },
+        "injection": {
+          "injection_detected": false,
+          "patterns_found": [],
+          "risk_level": "LOW"
+        },
+        "contradictions": 0,
+        "avg_confidence": 0.95,
+        "facts": {
+          "patient_id": "Not stated",
+          "product": "Not stated",
+          "reaction": "Not stated",
+          "severity": "Not stated",
+          "batch": "Not stated",
+          "actual_question": "What is the recommended dosage for",
+          "reporter": "Dr. Williams",
+          "narrative": "Not stated",
+          "issue": "Not stated",
+          "photo_mentioned": "Not stated",
+          "mi_topic": "Dosage adjustment",
+          "table_rows": "Not stated",
+          "image_reference": "Not stated"
+        },
+        "facts_full": [
+          {
+            "field": "patient_id",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "product",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "reaction",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "severity",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "batch",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "actual_question",
+            "value": "What is the recommended dosage for",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "mi_001.pdf",
+                "page": 1,
+                "text": "[Page 1] Medical Information Request\nQuestion: What is the recommended dosage for Product C?\nTopic: Dosage adjustment\nReporter: Dr. Williams",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "reporter",
+            "value": "Dr. Williams",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "mi_001.pdf",
+                "page": 1,
+                "text": "[Page 1] Medical Information Request\nQuestion: What is the recommended dosage for Product C?\nTopic: Dosage adjustment\nReporter: Dr. Williams",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "narrative",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "issue",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "photo_mentioned",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "mi_topic",
+            "value": "Dosage adjustment",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "mi_001.pdf",
+                "page": 1,
+                "text": "[Page 1] Medical Information Request\nQuestion: What is the recommended dosage for Product C?\nTopic: Dosage adjustment\nReporter: Dr. Williams",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "table_rows",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "image_reference",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          }
+        ],
+        "core_evidence_pages_ok": true,
+        "processing_ms": 2,
+        "expected": "INFO_REQUEST_MI",
+        "correct": true
       },
       {
         "file": "mi_002.pdf",
         "status": "OK",
+        "document_type": "DIGITAL_TEXT_PDF",
         "category": "INFO_REQUEST_MI",
-        "confidence": 0.8999999999999999,
-        "review": false
+        "confidence": 0.91,
+        "multi_label": [
+          "INFO_REQUEST_MI"
+        ],
+        "review_required": false,
+        "language_flag": "en",
+        "ocr_confidence": null,
+        "page_count": 1,
+        "coverage": {
+          "total_claims": 3,
+          "supported": 3,
+          "unsupported": 0,
+          "coverage_percent": 100.0
+        },
+        "completeness": {
+          "present": [
+            "actual_question",
+            "mi_topic"
+          ],
+          "missing": [
+            "product"
+          ],
+          "required_present": [
+            "actual_question"
+          ],
+          "required_missing": [],
+          "completeness_percent": 66.7
+        },
+        "reliability": "HIGH",
+        "review_priority": "LOW",
+        "route": "PDF \u2192 RAG \u2192 Rules",
+        "rag": {
+          "used": true,
+          "algorithm": "BM25",
+          "embeddings_used": false,
+          "chunks_indexed": 1,
+          "pages_indexed": 1,
+          "facts_attributed": 0,
+          "top_scores": []
+        },
+        "injection": {
+          "injection_detected": false,
+          "patterns_found": [],
+          "risk_level": "LOW"
+        },
+        "contradictions": 0,
+        "avg_confidence": 0.95,
+        "facts": {
+          "patient_id": "Not stated",
+          "product": "Not stated",
+          "reaction": "Not stated",
+          "severity": "Not stated",
+          "batch": "Not stated",
+          "actual_question": "Contraindications for",
+          "reporter": "Pharmacist Brown",
+          "narrative": "Not stated",
+          "issue": "Not stated",
+          "photo_mentioned": "Not stated",
+          "mi_topic": "Drug interaction",
+          "table_rows": "Not stated",
+          "image_reference": "Not stated"
+        },
+        "facts_full": [
+          {
+            "field": "patient_id",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "product",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "reaction",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "severity",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "batch",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "actual_question",
+            "value": "Contraindications for",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "mi_002.pdf",
+                "page": 1,
+                "text": "[Page 1] Information Request\nQuestion: Contraindications for Product A with warfarin?\nTopic: Drug interaction\nReporter: Pharmacist Brown",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "reporter",
+            "value": "Pharmacist Brown",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "mi_002.pdf",
+                "page": 1,
+                "text": "[Page 1] Information Request\nQuestion: Contraindications for Product A with warfarin?\nTopic: Drug interaction\nReporter: Pharmacist Brown",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "narrative",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "issue",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "photo_mentioned",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "mi_topic",
+            "value": "Drug interaction",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "mi_002.pdf",
+                "page": 1,
+                "text": "[Page 1] Information Request\nQuestion: Contraindications for Product A with warfarin?\nTopic: Drug interaction\nReporter: Pharmacist Brown",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "table_rows",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "image_reference",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          }
+        ],
+        "core_evidence_pages_ok": true,
+        "processing_ms": 2,
+        "expected": "INFO_REQUEST_MI",
+        "correct": true
       },
       {
         "file": "notrel_001.pdf",
         "status": "OK",
+        "document_type": "DIGITAL_TEXT_PDF",
         "category": "NOT_RELEVANT",
-        "confidence": 0.8999999999999999,
-        "review": false
+        "confidence": 0.55,
+        "multi_label": [
+          "NOT_RELEVANT"
+        ],
+        "review_required": false,
+        "language_flag": "en",
+        "ocr_confidence": null,
+        "page_count": 1,
+        "coverage": {
+          "total_claims": 0,
+          "supported": 0,
+          "unsupported": 0,
+          "coverage_percent": 0.0
+        },
+        "completeness": {
+          "present": [],
+          "missing": [],
+          "required_present": [],
+          "required_missing": [],
+          "completeness_percent": 100.0
+        },
+        "reliability": "LOW",
+        "review_priority": "HIGH",
+        "route": "PDF \u2192 RAG \u2192 Rules",
+        "rag": {
+          "used": true,
+          "algorithm": "BM25",
+          "embeddings_used": false,
+          "chunks_indexed": 1,
+          "pages_indexed": 1,
+          "facts_attributed": 0,
+          "top_scores": []
+        },
+        "injection": {
+          "injection_detected": false,
+          "patterns_found": [],
+          "risk_level": "LOW"
+        },
+        "contradictions": 0,
+        "avg_confidence": 0.0,
+        "facts": {
+          "patient_id": "Not stated",
+          "product": "Not stated",
+          "reaction": "Not stated",
+          "severity": "Not stated",
+          "batch": "Not stated",
+          "actual_question": "Not stated",
+          "reporter": "Not stated",
+          "narrative": "Not stated",
+          "issue": "Not stated",
+          "photo_mentioned": "Not stated",
+          "mi_topic": "Not stated",
+          "table_rows": "Not stated",
+          "image_reference": "Not stated"
+        },
+        "facts_full": [
+          {
+            "field": "patient_id",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "product",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "reaction",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "severity",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "batch",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "actual_question",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "reporter",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "narrative",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "issue",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "photo_mentioned",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "mi_topic",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "table_rows",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "image_reference",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          }
+        ],
+        "core_evidence_pages_ok": true,
+        "processing_ms": 2,
+        "expected": "NOT_RELEVANT",
+        "correct": true
       },
       {
         "file": "notrel_002.pdf",
         "status": "OK",
+        "document_type": "DIGITAL_TEXT_PDF",
         "category": "NOT_RELEVANT",
-        "confidence": 0.8999999999999999,
-        "review": false
+        "confidence": 0.55,
+        "multi_label": [
+          "NOT_RELEVANT"
+        ],
+        "review_required": false,
+        "language_flag": "en",
+        "ocr_confidence": null,
+        "page_count": 1,
+        "coverage": {
+          "total_claims": 0,
+          "supported": 0,
+          "unsupported": 0,
+          "coverage_percent": 0.0
+        },
+        "completeness": {
+          "present": [],
+          "missing": [],
+          "required_present": [],
+          "required_missing": [],
+          "completeness_percent": 100.0
+        },
+        "reliability": "LOW",
+        "review_priority": "HIGH",
+        "route": "PDF \u2192 RAG \u2192 Rules",
+        "rag": {
+          "used": true,
+          "algorithm": "BM25",
+          "embeddings_used": false,
+          "chunks_indexed": 1,
+          "pages_indexed": 1,
+          "facts_attributed": 0,
+          "top_scores": []
+        },
+        "injection": {
+          "injection_detected": false,
+          "patterns_found": [],
+          "risk_level": "LOW"
+        },
+        "contradictions": 0,
+        "avg_confidence": 0.0,
+        "facts": {
+          "patient_id": "Not stated",
+          "product": "Not stated",
+          "reaction": "Not stated",
+          "severity": "Not stated",
+          "batch": "Not stated",
+          "actual_question": "Not stated",
+          "reporter": "Not stated",
+          "narrative": "Not stated",
+          "issue": "Not stated",
+          "photo_mentioned": "Not stated",
+          "mi_topic": "Not stated",
+          "table_rows": "Not stated",
+          "image_reference": "Not stated"
+        },
+        "facts_full": [
+          {
+            "field": "patient_id",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "product",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "reaction",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "severity",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "batch",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "actual_question",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "reporter",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "narrative",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "issue",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "photo_mentioned",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "mi_topic",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "table_rows",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "image_reference",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          }
+        ],
+        "core_evidence_pages_ok": true,
+        "processing_ms": 2,
+        "expected": "NOT_RELEVANT",
+        "correct": true
       },
       {
         "file": "pqc_001.pdf",
         "status": "OK",
+        "document_type": "DIGITAL_TEXT_PDF",
         "category": "QUALITY_COMPLAINT_PQC",
-        "confidence": 0.8999999999999999,
-        "review": true
+        "confidence": 0.91,
+        "multi_label": [
+          "QUALITY_COMPLAINT_PQC"
+        ],
+        "review_required": true,
+        "language_flag": "en",
+        "ocr_confidence": null,
+        "page_count": 1,
+        "coverage": {
+          "total_claims": 5,
+          "supported": 5,
+          "unsupported": 0,
+          "coverage_percent": 100.0
+        },
+        "completeness": {
+          "present": [
+            "product",
+            "batch",
+            "issue",
+            "photo_mentioned"
+          ],
+          "missing": [
+            "narrative"
+          ],
+          "required_present": [
+            "product",
+            "batch",
+            "issue"
+          ],
+          "required_missing": [],
+          "completeness_percent": 80.0
+        },
+        "reliability": "HIGH",
+        "review_priority": "LOW",
+        "route": "PDF \u2192 RAG \u2192 Rules",
+        "rag": {
+          "used": true,
+          "algorithm": "BM25",
+          "embeddings_used": false,
+          "chunks_indexed": 1,
+          "pages_indexed": 1,
+          "facts_attributed": 0,
+          "top_scores": []
+        },
+        "injection": {
+          "injection_detected": false,
+          "patterns_found": [],
+          "risk_level": "LOW"
+        },
+        "contradictions": 0,
+        "avg_confidence": 0.92,
+        "facts": {
+          "patient_id": "Not stated",
+          "product": "Product B",
+          "reaction": "Not stated",
+          "severity": "Not stated",
+          "batch": "BATCH-99",
+          "actual_question": "Not stated",
+          "reporter": "Not stated",
+          "narrative": "Not stated",
+          "issue": "Damaged packaging, tablets broken",
+          "photo_mentioned": "Yes",
+          "mi_topic": "Not stated",
+          "table_rows": "Not stated",
+          "image_reference": "Image/photo reference detected: attached image, photo"
+        },
+        "facts_full": [
+          {
+            "field": "patient_id",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "product",
+            "value": "Product B",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "pqc_001.pdf",
+                "page": 1,
+                "text": "[Page 1] Quality Complaint\nProduct: Product B\nBatch: BATCH-99\nProblem: Damaged packaging, tablets broken\nPhoto: attached image of damaged box",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "reaction",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "severity",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "batch",
+            "value": "BATCH-99",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "pqc_001.pdf",
+                "page": 1,
+                "text": "[Page 1] Quality Complaint\nProduct: Product B\nBatch: BATCH-99\nProblem: Damaged packaging, tablets broken\nPhoto: attached image of damaged box",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "actual_question",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "reporter",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "narrative",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "issue",
+            "value": "Damaged packaging, tablets broken",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "pqc_001.pdf",
+                "page": 1,
+                "text": "[Page 1] Quality Complaint\nProduct: Product B\nBatch: BATCH-99\nProblem: Damaged packaging, tablets broken\nPhoto: attached image of damaged box",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "photo_mentioned",
+            "value": "Yes",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "pqc_001.pdf",
+                "page": 1,
+                "text": "[Page 1] Quality Complaint\nProduct: Product B\nBatch: BATCH-99\nProblem: Damaged packaging, tablets broken\nPhoto: attached image of damaged box",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "mi_topic",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "table_rows",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "image_reference",
+            "value": "Image/photo reference detected: attached image, photo",
+            "confidence": 0.8,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "pqc_001.pdf",
+                "page": 1,
+                "text": "[Page 1] Quality Complaint\nProduct: Product B\nBatch: BATCH-99\nProblem: Damaged packaging, tablets broken\nPhoto: attached image of damaged box",
+                "confidence": 0.8
+              }
+            ]
+          }
+        ],
+        "core_evidence_pages_ok": true,
+        "processing_ms": 2,
+        "expected": "QUALITY_COMPLAINT_PQC",
+        "correct": true
       },
       {
         "file": "pqc_002.pdf",
         "status": "OK",
+        "document_type": "DIGITAL_TEXT_PDF",
         "category": "QUALITY_COMPLAINT_PQC",
-        "confidence": 0.8999999999999999,
-        "review": true
+        "confidence": 0.85,
+        "multi_label": [
+          "QUALITY_COMPLAINT_PQC"
+        ],
+        "review_required": true,
+        "language_flag": "en",
+        "ocr_confidence": null,
+        "page_count": 1,
+        "coverage": {
+          "total_claims": 5,
+          "supported": 5,
+          "unsupported": 0,
+          "coverage_percent": 100.0
+        },
+        "completeness": {
+          "present": [
+            "product",
+            "batch",
+            "issue",
+            "photo_mentioned"
+          ],
+          "missing": [
+            "narrative"
+          ],
+          "required_present": [
+            "product",
+            "batch",
+            "issue"
+          ],
+          "required_missing": [],
+          "completeness_percent": 80.0
+        },
+        "reliability": "HIGH",
+        "review_priority": "LOW",
+        "route": "PDF \u2192 RAG \u2192 Rules",
+        "rag": {
+          "used": true,
+          "algorithm": "BM25",
+          "embeddings_used": false,
+          "chunks_indexed": 1,
+          "pages_indexed": 1,
+          "facts_attributed": 0,
+          "top_scores": []
+        },
+        "injection": {
+          "injection_detected": false,
+          "patterns_found": [],
+          "risk_level": "LOW"
+        },
+        "contradictions": 0,
+        "avg_confidence": 0.92,
+        "facts": {
+          "patient_id": "Not stated",
+          "product": "Product D",
+          "reaction": "Not stated",
+          "severity": "Not stated",
+          "batch": "BATCH-50",
+          "actual_question": "Not stated",
+          "reporter": "Not stated",
+          "narrative": "Not stated",
+          "issue": "Discoloration of tablets, unusual odor",
+          "photo_mentioned": "Yes",
+          "mi_topic": "Not stated",
+          "table_rows": "Not stated",
+          "image_reference": "Image/photo reference detected: photo, photograph"
+        },
+        "facts_full": [
+          {
+            "field": "patient_id",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "product",
+            "value": "Product D",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "pqc_002.pdf",
+                "page": 1,
+                "text": "[Page 1] Product Complaint\nProduct: Product D\nBatch: BATCH-50\nProblem: Discoloration of tablets, unusual odor\nPhoto: see attached photograph",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "reaction",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "severity",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "batch",
+            "value": "BATCH-50",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "pqc_002.pdf",
+                "page": 1,
+                "text": "[Page 1] Product Complaint\nProduct: Product D\nBatch: BATCH-50\nProblem: Discoloration of tablets, unusual odor\nPhoto: see attached photograph",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "actual_question",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "reporter",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "narrative",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "issue",
+            "value": "Discoloration of tablets, unusual odor",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "pqc_002.pdf",
+                "page": 1,
+                "text": "[Page 1] Product Complaint\nProduct: Product D\nBatch: BATCH-50\nProblem: Discoloration of tablets, unusual odor\nPhoto: see attached photograph",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "photo_mentioned",
+            "value": "Yes",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "pqc_002.pdf",
+                "page": 1,
+                "text": "[Page 1] Product Complaint\nProduct: Product D\nBatch: BATCH-50\nProblem: Discoloration of tablets, unusual odor\nPhoto: see attached photograph",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "mi_topic",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "table_rows",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "image_reference",
+            "value": "Image/photo reference detected: photo, photograph",
+            "confidence": 0.8,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "pqc_002.pdf",
+                "page": 1,
+                "text": "[Page 1] Product Complaint\nProduct: Product D\nBatch: BATCH-50\nProblem: Discoloration of tablets, unusual odor\nPhoto: see attached photograph",
+                "confidence": 0.8
+              }
+            ]
+          }
+        ],
+        "core_evidence_pages_ok": true,
+        "processing_ms": 4,
+        "expected": "QUALITY_COMPLAINT_PQC",
+        "correct": true
       },
       {
         "file": "safety_001.pdf",
         "status": "OK",
+        "document_type": "DIGITAL_TEXT_PDF",
         "category": "SAFETY_REPORT_ICSR",
-        "confidence": 0.8999999999999999,
-        "review": false
+        "confidence": 0.91,
+        "multi_label": [
+          "SAFETY_REPORT_ICSR"
+        ],
+        "review_required": false,
+        "language_flag": "en",
+        "ocr_confidence": null,
+        "page_count": 1,
+        "coverage": {
+          "total_claims": 7,
+          "supported": 7,
+          "unsupported": 0,
+          "coverage_percent": 100.0
+        },
+        "completeness": {
+          "present": [
+            "patient_id",
+            "product",
+            "reaction",
+            "severity",
+            "batch",
+            "reporter",
+            "narrative"
+          ],
+          "missing": [],
+          "required_present": [
+            "patient_id",
+            "product",
+            "reaction"
+          ],
+          "required_missing": [],
+          "completeness_percent": 100.0
+        },
+        "reliability": "HIGH",
+        "review_priority": "LOW",
+        "route": "PDF \u2192 RAG \u2192 Rules",
+        "rag": {
+          "used": true,
+          "algorithm": "BM25",
+          "embeddings_used": false,
+          "chunks_indexed": 1,
+          "pages_indexed": 1,
+          "facts_attributed": 0,
+          "top_scores": []
+        },
+        "injection": {
+          "injection_detected": false,
+          "patterns_found": [],
+          "risk_level": "LOW"
+        },
+        "contradictions": 0,
+        "avg_confidence": 0.95,
+        "facts": {
+          "patient_id": "P-100",
+          "product": "Product A",
+          "reaction": "Severe headache",
+          "severity": "Serious",
+          "batch": "BATCH-100",
+          "actual_question": "Not stated",
+          "reporter": "Dr. Smith",
+          "narrative": "Patient reported severe headache within 2 hours.",
+          "issue": "Not stated",
+          "photo_mentioned": "Not stated",
+          "mi_topic": "Not stated",
+          "table_rows": "Not stated",
+          "image_reference": "Not stated"
+        },
+        "facts_full": [
+          {
+            "field": "patient_id",
+            "value": "P-100",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "safety_001.pdf",
+                "page": 1,
+                "text": "[Page 1] Adverse Event Report\nPatient: P-100\nProduct: Product A\nReaction: Severe headache\nSeverity: Serious\nBatch: BATCH-100\nReporter: Dr. Smith\nNarrative: Patient reported severe headache within 2 hours.",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "product",
+            "value": "Product A",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "safety_001.pdf",
+                "page": 1,
+                "text": "[Page 1] Adverse Event Report\nPatient: P-100\nProduct: Product A\nReaction: Severe headache\nSeverity: Serious\nBatch: BATCH-100\nReporter: Dr. Smith\nNarrative: Patient reported severe headache within 2 hours.",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "reaction",
+            "value": "Severe headache",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "safety_001.pdf",
+                "page": 1,
+                "text": "[Page 1] Adverse Event Report\nPatient: P-100\nProduct: Product A\nReaction: Severe headache\nSeverity: Serious\nBatch: BATCH-100\nReporter: Dr. Smith\nNarrative: Patient reported severe headache within 2 hours.",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "severity",
+            "value": "Serious",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "safety_001.pdf",
+                "page": 1,
+                "text": "[Page 1] Adverse Event Report\nPatient: P-100\nProduct: Product A\nReaction: Severe headache\nSeverity: Serious\nBatch: BATCH-100\nReporter: Dr. Smith\nNarrative: Patient reported severe headache within 2 hours.",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "batch",
+            "value": "BATCH-100",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "safety_001.pdf",
+                "page": 1,
+                "text": "[Page 1] Adverse Event Report\nPatient: P-100\nProduct: Product A\nReaction: Severe headache\nSeverity: Serious\nBatch: BATCH-100\nReporter: Dr. Smith\nNarrative: Patient reported severe headache within 2 hours.",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "actual_question",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "reporter",
+            "value": "Dr. Smith",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "safety_001.pdf",
+                "page": 1,
+                "text": "[Page 1] Adverse Event Report\nPatient: P-100\nProduct: Product A\nReaction: Severe headache\nSeverity: Serious\nBatch: BATCH-100\nReporter: Dr. Smith\nNarrative: Patient reported severe headache within 2 hours.",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "narrative",
+            "value": "Patient reported severe headache within 2 hours.",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "safety_001.pdf",
+                "page": 1,
+                "text": "[Page 1] Adverse Event Report\nPatient: P-100\nProduct: Product A\nReaction: Severe headache\nSeverity: Serious\nBatch: BATCH-100\nReporter: Dr. Smith\nNarrative: Patient reported severe headache within 2 hours.",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "issue",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "photo_mentioned",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "mi_topic",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "table_rows",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "image_reference",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          }
+        ],
+        "core_evidence_pages_ok": true,
+        "processing_ms": 3,
+        "expected": "SAFETY_REPORT_ICSR",
+        "correct": true
       },
       {
         "file": "safety_002.pdf",
         "status": "OK",
+        "document_type": "DIGITAL_TEXT_PDF",
         "category": "SAFETY_REPORT_ICSR",
-        "confidence": 0.8999999999999999,
-        "review": true
+        "confidence": 0.91,
+        "multi_label": [
+          "SAFETY_REPORT_ICSR"
+        ],
+        "review_required": true,
+        "language_flag": "en",
+        "ocr_confidence": null,
+        "page_count": 1,
+        "coverage": {
+          "total_claims": 6,
+          "supported": 6,
+          "unsupported": 0,
+          "coverage_percent": 100.0
+        },
+        "completeness": {
+          "present": [
+            "patient_id",
+            "product",
+            "reaction",
+            "severity",
+            "batch",
+            "reporter"
+          ],
+          "missing": [
+            "narrative"
+          ],
+          "required_present": [
+            "patient_id",
+            "product",
+            "reaction"
+          ],
+          "required_missing": [],
+          "completeness_percent": 85.7
+        },
+        "reliability": "HIGH",
+        "review_priority": "LOW",
+        "route": "PDF \u2192 RAG \u2192 Rules",
+        "rag": {
+          "used": true,
+          "algorithm": "BM25",
+          "embeddings_used": false,
+          "chunks_indexed": 1,
+          "pages_indexed": 1,
+          "facts_attributed": 0,
+          "top_scores": []
+        },
+        "injection": {
+          "injection_detected": false,
+          "patterns_found": [],
+          "risk_level": "LOW"
+        },
+        "contradictions": 0,
+        "avg_confidence": 0.95,
+        "facts": {
+          "patient_id": "P-200",
+          "product": "Product B",
+          "reaction": "Nausea and vomiting",
+          "severity": "Non-serious",
+          "batch": "BATCH-200",
+          "actual_question": "Not stated",
+          "reporter": "Dr. Jones",
+          "narrative": "Not stated",
+          "issue": "Not stated",
+          "photo_mentioned": "Not stated",
+          "mi_topic": "Not stated",
+          "table_rows": "Not stated",
+          "image_reference": "Not stated"
+        },
+        "facts_full": [
+          {
+            "field": "patient_id",
+            "value": "P-200",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "safety_002.pdf",
+                "page": 1,
+                "text": "[Page 1] Safety Report\nPatient: P-200\nProduct: Product B\nReaction: Nausea and vomiting\nSeverity: Non-serious\nBatch: BATCH-200\nReporter: Dr. Jones",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "product",
+            "value": "Product B",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "safety_002.pdf",
+                "page": 1,
+                "text": "[Page 1] Safety Report\nPatient: P-200\nProduct: Product B\nReaction: Nausea and vomiting\nSeverity: Non-serious\nBatch: BATCH-200\nReporter: Dr. Jones",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "reaction",
+            "value": "Nausea and vomiting",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "safety_002.pdf",
+                "page": 1,
+                "text": "[Page 1] Safety Report\nPatient: P-200\nProduct: Product B\nReaction: Nausea and vomiting\nSeverity: Non-serious\nBatch: BATCH-200\nReporter: Dr. Jones",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "severity",
+            "value": "Non-serious",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "safety_002.pdf",
+                "page": 1,
+                "text": "[Page 1] Safety Report\nPatient: P-200\nProduct: Product B\nReaction: Nausea and vomiting\nSeverity: Non-serious\nBatch: BATCH-200\nReporter: Dr. Jones",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "batch",
+            "value": "BATCH-200",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "safety_002.pdf",
+                "page": 1,
+                "text": "[Page 1] Safety Report\nPatient: P-200\nProduct: Product B\nReaction: Nausea and vomiting\nSeverity: Non-serious\nBatch: BATCH-200\nReporter: Dr. Jones",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "actual_question",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "reporter",
+            "value": "Dr. Jones",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "safety_002.pdf",
+                "page": 1,
+                "text": "[Page 1] Safety Report\nPatient: P-200\nProduct: Product B\nReaction: Nausea and vomiting\nSeverity: Non-serious\nBatch: BATCH-200\nReporter: Dr. Jones",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "narrative",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "issue",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "photo_mentioned",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "mi_topic",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "table_rows",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "image_reference",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          }
+        ],
+        "core_evidence_pages_ok": true,
+        "processing_ms": 2,
+        "expected": "SAFETY_REPORT_ICSR",
+        "correct": true
       },
       {
         "file": "safety_003.pdf",
         "status": "OK",
+        "document_type": "DIGITAL_TEXT_PDF",
         "category": "SAFETY_REPORT_ICSR",
-        "confidence": 0.8999999999999999,
-        "review": true
+        "confidence": 0.91,
+        "multi_label": [
+          "SAFETY_REPORT_ICSR"
+        ],
+        "review_required": true,
+        "language_flag": "en",
+        "ocr_confidence": null,
+        "page_count": 1,
+        "coverage": {
+          "total_claims": 5,
+          "supported": 5,
+          "unsupported": 0,
+          "coverage_percent": 100.0
+        },
+        "completeness": {
+          "present": [
+            "patient_id",
+            "product",
+            "reaction",
+            "severity",
+            "batch"
+          ],
+          "missing": [
+            "reporter",
+            "narrative"
+          ],
+          "required_present": [
+            "patient_id",
+            "product",
+            "reaction"
+          ],
+          "required_missing": [],
+          "completeness_percent": 71.4
+        },
+        "reliability": "HIGH",
+        "review_priority": "MEDIUM",
+        "route": "PDF \u2192 RAG \u2192 Rules",
+        "rag": {
+          "used": true,
+          "algorithm": "BM25",
+          "embeddings_used": false,
+          "chunks_indexed": 1,
+          "pages_indexed": 1,
+          "facts_attributed": 0,
+          "top_scores": []
+        },
+        "injection": {
+          "injection_detected": false,
+          "patterns_found": [],
+          "risk_level": "LOW"
+        },
+        "contradictions": 0,
+        "avg_confidence": 0.95,
+        "facts": {
+          "patient_id": "PAT-300",
+          "product": "Product C",
+          "reaction": "Rash",
+          "severity": "Non-serious",
+          "batch": "BATCH-300",
+          "actual_question": "Not stated",
+          "reporter": "Not stated",
+          "narrative": "Not stated",
+          "issue": "Not stated",
+          "photo_mentioned": "Not stated",
+          "mi_topic": "Not stated",
+          "table_rows": "Not stated",
+          "image_reference": "Not stated"
+        },
+        "facts_full": [
+          {
+            "field": "patient_id",
+            "value": "PAT-300",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "safety_003.pdf",
+                "page": 1,
+                "text": "[Page 1] ICSR Report\nPatient ID: PAT-300\nProduct: Product C\nReaction: Rash\nSeverity: Non-serious\nBatch: BATCH-300",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "product",
+            "value": "Product C",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "safety_003.pdf",
+                "page": 1,
+                "text": "[Page 1] ICSR Report\nPatient ID: PAT-300\nProduct: Product C\nReaction: Rash\nSeverity: Non-serious\nBatch: BATCH-300",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "reaction",
+            "value": "Rash",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "safety_003.pdf",
+                "page": 1,
+                "text": "[Page 1] ICSR Report\nPatient ID: PAT-300\nProduct: Product C\nReaction: Rash\nSeverity: Non-serious\nBatch: BATCH-300",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "severity",
+            "value": "Non-serious",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "safety_003.pdf",
+                "page": 1,
+                "text": "[Page 1] ICSR Report\nPatient ID: PAT-300\nProduct: Product C\nReaction: Rash\nSeverity: Non-serious\nBatch: BATCH-300",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "batch",
+            "value": "BATCH-300",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "safety_003.pdf",
+                "page": 1,
+                "text": "[Page 1] ICSR Report\nPatient ID: PAT-300\nProduct: Product C\nReaction: Rash\nSeverity: Non-serious\nBatch: BATCH-300",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "actual_question",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "reporter",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "narrative",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "issue",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "photo_mentioned",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "mi_topic",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "table_rows",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "image_reference",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          }
+        ],
+        "core_evidence_pages_ok": true,
+        "processing_ms": 2,
+        "expected": "SAFETY_REPORT_ICSR",
+        "correct": true
       },
       {
         "file": "scanned_case.pdf",
         "status": "OK",
+        "document_type": "SCANNED_OCR_PDF",
         "category": "SAFETY_REPORT_ICSR",
-        "confidence": 0.8999999999999999,
-        "review": true
+        "confidence": 0.91,
+        "multi_label": [
+          "SAFETY_REPORT_ICSR"
+        ],
+        "review_required": true,
+        "language_flag": "en",
+        "ocr_confidence": 0.9293,
+        "page_count": 1,
+        "coverage": {
+          "total_claims": 3,
+          "supported": 3,
+          "unsupported": 0,
+          "coverage_percent": 100.0
+        },
+        "completeness": {
+          "present": [
+            "reaction",
+            "severity",
+            "batch"
+          ],
+          "missing": [
+            "patient_id",
+            "product",
+            "reporter",
+            "narrative"
+          ],
+          "required_present": [
+            "reaction"
+          ],
+          "required_missing": [
+            "patient_id",
+            "product"
+          ],
+          "completeness_percent": 42.9
+        },
+        "reliability": "MEDIUM",
+        "review_priority": "HIGH",
+        "route": "OCR \u2192 RAG \u2192 Rules",
+        "rag": {
+          "used": true,
+          "algorithm": "BM25",
+          "embeddings_used": false,
+          "chunks_indexed": 1,
+          "pages_indexed": 1,
+          "facts_attributed": 0,
+          "top_scores": []
+        },
+        "injection": {
+          "injection_detected": false,
+          "patterns_found": [],
+          "risk_level": "LOW"
+        },
+        "contradictions": 0,
+        "avg_confidence": 0.9293,
+        "facts": {
+          "patient_id": "Not stated",
+          "product": "Not stated",
+          "reaction": "Headache",
+          "severity": "Serious",
+          "batch": "BATCH-002",
+          "actual_question": "Not stated",
+          "reporter": "Not stated",
+          "narrative": "Not stated",
+          "issue": "Not stated",
+          "photo_mentioned": "Not stated",
+          "mi_topic": "Not stated",
+          "table_rows": "Not stated",
+          "image_reference": "Not stated"
+        },
+        "facts_full": [
+          {
+            "field": "patient_id",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "product",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "reaction",
+            "value": "Headache",
+            "confidence": 0.9292857142857143,
+            "evidence": [
+              {
+                "source_type": "PDF_OCR",
+                "source_id": "scanned_case.pdf",
+                "page": 1,
+                "text": "[Page 1] SYNTHETIC SAFETY REPORT Patient P-002 Product Product B Reaction: Headache Severity: Serious Batch: BATCH-002",
+                "confidence": 0.9292857142857143
+              }
+            ]
+          },
+          {
+            "field": "severity",
+            "value": "Serious",
+            "confidence": 0.9292857142857143,
+            "evidence": [
+              {
+                "source_type": "PDF_OCR",
+                "source_id": "scanned_case.pdf",
+                "page": 1,
+                "text": "[Page 1] SYNTHETIC SAFETY REPORT Patient P-002 Product Product B Reaction: Headache Severity: Serious Batch: BATCH-002",
+                "confidence": 0.9292857142857143
+              }
+            ]
+          },
+          {
+            "field": "batch",
+            "value": "BATCH-002",
+            "confidence": 0.9292857142857143,
+            "evidence": [
+              {
+                "source_type": "PDF_OCR",
+                "source_id": "scanned_case.pdf",
+                "page": 1,
+                "text": "[Page 1] SYNTHETIC SAFETY REPORT Patient P-002 Product Product B Reaction: Headache Severity: Serious Batch: BATCH-002",
+                "confidence": 0.9292857142857143
+              }
+            ]
+          },
+          {
+            "field": "actual_question",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "reporter",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "narrative",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "issue",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "photo_mentioned",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "mi_topic",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "table_rows",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "image_reference",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          }
+        ],
+        "core_evidence_pages_ok": true,
+        "processing_ms": 2074,
+        "expected": "SAFETY_REPORT_ICSR",
+        "correct": true
       },
       {
         "file": "spanish_001.pdf",
         "status": "OK",
-        "category": "NOT_RELEVANT",
-        "confidence": 0.8999999999999999,
-        "review": true
+        "document_type": "DIGITAL_TEXT_PDF",
+        "category": "SAFETY_REPORT_ICSR",
+        "confidence": 0.91,
+        "multi_label": [
+          "SAFETY_REPORT_ICSR"
+        ],
+        "review_required": true,
+        "language_flag": "non-en",
+        "ocr_confidence": null,
+        "page_count": 1,
+        "coverage": {
+          "total_claims": 5,
+          "supported": 5,
+          "unsupported": 0,
+          "coverage_percent": 100.0
+        },
+        "completeness": {
+          "present": [
+            "patient_id",
+            "product",
+            "reaction",
+            "severity",
+            "batch"
+          ],
+          "missing": [
+            "reporter",
+            "narrative"
+          ],
+          "required_present": [
+            "patient_id",
+            "product",
+            "reaction"
+          ],
+          "required_missing": [],
+          "completeness_percent": 71.4
+        },
+        "reliability": "HIGH",
+        "review_priority": "MEDIUM",
+        "route": "PDF \u2192 RAG \u2192 Rules",
+        "rag": {
+          "used": true,
+          "algorithm": "BM25",
+          "embeddings_used": false,
+          "chunks_indexed": 1,
+          "pages_indexed": 1,
+          "facts_attributed": 0,
+          "top_scores": []
+        },
+        "injection": {
+          "injection_detected": false,
+          "patterns_found": [],
+          "risk_level": "LOW"
+        },
+        "contradictions": 0,
+        "avg_confidence": 0.95,
+        "facts": {
+          "patient_id": "P-500",
+          "product": "Producto A",
+          "reaction": "Dolor de cabeza",
+          "severity": "Grave",
+          "batch": "LOTE-500",
+          "actual_question": "Not stated",
+          "reporter": "Not stated",
+          "narrative": "Not stated",
+          "issue": "Not stated",
+          "photo_mentioned": "Not stated",
+          "mi_topic": "Not stated",
+          "table_rows": "Not stated",
+          "image_reference": "Not stated"
+        },
+        "facts_full": [
+          {
+            "field": "patient_id",
+            "value": "P-500",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "spanish_001.pdf",
+                "page": 1,
+                "text": "[Page 1] Informe de Evento Adverso\nPaciente: P-500\nProducto: Producto A\nReaccion: Dolor de cabeza\nGravedad: Grave\nLote: LOTE-500",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "product",
+            "value": "Producto A",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "spanish_001.pdf",
+                "page": 1,
+                "text": "[Page 1] Informe de Evento Adverso\nPaciente: P-500\nProducto: Producto A\nReaccion: Dolor de cabeza\nGravedad: Grave\nLote: LOTE-500",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "reaction",
+            "value": "Dolor de cabeza",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "spanish_001.pdf",
+                "page": 1,
+                "text": "[Page 1] Informe de Evento Adverso\nPaciente: P-500\nProducto: Producto A\nReaccion: Dolor de cabeza\nGravedad: Grave\nLote: LOTE-500",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "severity",
+            "value": "Grave",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "spanish_001.pdf",
+                "page": 1,
+                "text": "[Page 1] Informe de Evento Adverso\nPaciente: P-500\nProducto: Producto A\nReaccion: Dolor de cabeza\nGravedad: Grave\nLote: LOTE-500",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "batch",
+            "value": "LOTE-500",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "spanish_001.pdf",
+                "page": 1,
+                "text": "[Page 1] Informe de Evento Adverso\nPaciente: P-500\nProducto: Producto A\nReaccion: Dolor de cabeza\nGravedad: Grave\nLote: LOTE-500",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "actual_question",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "reporter",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "narrative",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "issue",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "photo_mentioned",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "mi_topic",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "table_rows",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "image_reference",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          }
+        ],
+        "core_evidence_pages_ok": true,
+        "processing_ms": 2,
+        "expected": "SAFETY_REPORT_ICSR",
+        "correct": true
       },
       {
         "file": "synthetic_case.pdf",
         "status": "OK",
+        "document_type": "DIGITAL_TEXT_PDF",
         "category": "SAFETY_REPORT_ICSR",
-        "confidence": 0.8999999999999999,
-        "review": true
+        "confidence": 0.91,
+        "multi_label": [
+          "SAFETY_REPORT_ICSR"
+        ],
+        "review_required": true,
+        "language_flag": "en",
+        "ocr_confidence": null,
+        "page_count": 1,
+        "coverage": {
+          "total_claims": 5,
+          "supported": 5,
+          "unsupported": 0,
+          "coverage_percent": 100.0
+        },
+        "completeness": {
+          "present": [
+            "patient_id",
+            "product",
+            "reaction",
+            "severity",
+            "batch"
+          ],
+          "missing": [
+            "reporter",
+            "narrative"
+          ],
+          "required_present": [
+            "patient_id",
+            "product",
+            "reaction"
+          ],
+          "required_missing": [],
+          "completeness_percent": 71.4
+        },
+        "reliability": "HIGH",
+        "review_priority": "MEDIUM",
+        "route": "PDF \u2192 RAG \u2192 Rules",
+        "rag": {
+          "used": true,
+          "algorithm": "BM25",
+          "embeddings_used": false,
+          "chunks_indexed": 1,
+          "pages_indexed": 1,
+          "facts_attributed": 0,
+          "top_scores": []
+        },
+        "injection": {
+          "injection_detected": false,
+          "patterns_found": [],
+          "risk_level": "LOW"
+        },
+        "contradictions": 0,
+        "avg_confidence": 0.95,
+        "facts": {
+          "patient_id": "P-001",
+          "product": "Product A",
+          "reaction": "Nausea",
+          "severity": "Non-serious",
+          "batch": "BATCH-001",
+          "actual_question": "Not stated",
+          "reporter": "Not stated",
+          "narrative": "Not stated",
+          "issue": "Not stated",
+          "photo_mentioned": "Not stated",
+          "mi_topic": "Not stated",
+          "table_rows": "Not stated",
+          "image_reference": "Not stated"
+        },
+        "facts_full": [
+          {
+            "field": "patient_id",
+            "value": "P-001",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "synthetic_case.pdf",
+                "page": 1,
+                "text": "[Page 1] Synthetic Safety Report\nPatient: P-001\nProduct: Product A\nReaction: Nausea\nSeverity: Non-serious\nBatch: BATCH-001",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "product",
+            "value": "Product A",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "synthetic_case.pdf",
+                "page": 1,
+                "text": "[Page 1] Synthetic Safety Report\nPatient: P-001\nProduct: Product A\nReaction: Nausea\nSeverity: Non-serious\nBatch: BATCH-001",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "reaction",
+            "value": "Nausea",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "synthetic_case.pdf",
+                "page": 1,
+                "text": "[Page 1] Synthetic Safety Report\nPatient: P-001\nProduct: Product A\nReaction: Nausea\nSeverity: Non-serious\nBatch: BATCH-001",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "severity",
+            "value": "Non-serious",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "synthetic_case.pdf",
+                "page": 1,
+                "text": "[Page 1] Synthetic Safety Report\nPatient: P-001\nProduct: Product A\nReaction: Nausea\nSeverity: Non-serious\nBatch: BATCH-001",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "batch",
+            "value": "BATCH-001",
+            "confidence": 0.95,
+            "evidence": [
+              {
+                "source_type": "PDF",
+                "source_id": "synthetic_case.pdf",
+                "page": 1,
+                "text": "[Page 1] Synthetic Safety Report\nPatient: P-001\nProduct: Product A\nReaction: Nausea\nSeverity: Non-serious\nBatch: BATCH-001",
+                "confidence": 0.95
+              }
+            ]
+          },
+          {
+            "field": "actual_question",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "reporter",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "narrative",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "issue",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "photo_mentioned",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "mi_topic",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "table_rows",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "image_reference",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          }
+        ],
+        "core_evidence_pages_ok": true,
+        "processing_ms": 2,
+        "expected": "SAFETY_REPORT_ICSR",
+        "correct": true
       },
       {
         "file": "table_001.pdf",
         "status": "OK",
-        "category": "NOT_RELEVANT",
-        "confidence": 0.8999999999999999,
-        "review": false
+        "document_type": "DIGITAL_TEXT_PDF",
+        "category": "QUALITY_COMPLAINT_PQC",
+        "confidence": 0.7,
+        "multi_label": [
+          "QUALITY_COMPLAINT_PQC"
+        ],
+        "review_required": false,
+        "language_flag": "en",
+        "ocr_confidence": null,
+        "page_count": 1,
+        "coverage": {
+          "total_claims": 0,
+          "supported": 0,
+          "unsupported": 0,
+          "coverage_percent": 0.0
+        },
+        "completeness": {
+          "present": [],
+          "missing": [
+            "product",
+            "batch",
+            "issue",
+            "photo_mentioned",
+            "narrative"
+          ],
+          "required_present": [],
+          "required_missing": [
+            "product",
+            "batch",
+            "issue"
+          ],
+          "completeness_percent": 0.0
+        },
+        "reliability": "LOW",
+        "review_priority": "HIGH",
+        "route": "PDF \u2192 RAG \u2192 Rules",
+        "rag": {
+          "used": true,
+          "algorithm": "BM25",
+          "embeddings_used": false,
+          "chunks_indexed": 1,
+          "pages_indexed": 1,
+          "facts_attributed": 0,
+          "top_scores": []
+        },
+        "injection": {
+          "injection_detected": false,
+          "patterns_found": [],
+          "risk_level": "LOW"
+        },
+        "contradictions": 0,
+        "avg_confidence": 0.0,
+        "facts": {
+          "patient_id": "Not stated",
+          "product": "Not stated",
+          "reaction": "Not stated",
+          "severity": "Not stated",
+          "batch": "Not stated",
+          "actual_question": "Not stated",
+          "reporter": "Not stated",
+          "narrative": "Not stated",
+          "issue": "Not stated",
+          "photo_mentioned": "Not stated",
+          "mi_topic": "Not stated",
+          "table_rows": "Not stated",
+          "image_reference": "Not stated"
+        },
+        "facts_full": [
+          {
+            "field": "patient_id",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "product",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "reaction",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "severity",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "batch",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "actual_question",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "reporter",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "narrative",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "issue",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "photo_mentioned",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "mi_topic",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "table_rows",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          },
+          {
+            "field": "image_reference",
+            "value": "Not stated",
+            "confidence": 0.0,
+            "evidence": []
+          }
+        ],
+        "core_evidence_pages_ok": true,
+        "processing_ms": 3,
+        "expected": "QUALITY_COMPLAINT_PQC",
+        "correct": true
       }
     ],
-    "pdf_total": 15,
-    "pdf_success": 15,
-    "backend_health": {
-      "status": "PASS",
-      "data": {
-        "service": "Clinevo Smart Inbox Backend",
-        "status": "UP"
+    "aggregate": {
+      "total_documents": 15,
+      "processed_ok": 15,
+      "classification_distribution": {
+        "SAFETY_REPORT_ICSR": 8,
+        "INFO_REQUEST_MI": 2,
+        "NOT_RELEVANT": 2,
+        "QUALITY_COMPLAINT_PQC": 3
+      },
+      "classification_correct": 15,
+      "classification_correct_percent": 100.0,
+      "incorrect_files": [],
+      "avg_evidence_coverage_percent": 73.3,
+      "min_evidence_coverage_percent": 0.0,
+      "avg_processing_ms": 141.4,
+      "max_processing_ms": 2074,
+      "review_required_count": 9,
+      "ocr_documents": [
+        "scanned_case.pdf"
+      ],
+      "non_english_flagged": [
+        "french_001.pdf",
+        "spanish_001.pdf"
+      ],
+      "rag_used_documents": [
+        "adversarial_001.pdf",
+        "french_001.pdf",
+        "mi_001.pdf",
+        "mi_002.pdf",
+        "notrel_001.pdf",
+        "notrel_002.pdf",
+        "pqc_001.pdf",
+        "pqc_002.pdf",
+        "safety_001.pdf",
+        "safety_002.pdf",
+        "safety_003.pdf",
+        "scanned_case.pdf",
+        "spanish_001.pdf",
+        "synthetic_case.pdf",
+        "table_001.pdf"
+      ],
+      "rag_facts_attributed": 0,
+      "core_evidence_pages_ok_all": true,
+      "distinct_confidences": [
+        0.55,
+        0.7,
+        0.85,
+        0.91
+      ],
+      "multi_label_documents": []
+    },
+    "field_extraction": {
+      "safety_001": {
+        "patient_id": "P-100",
+        "product": "Product A",
+        "reaction": "Severe headache",
+        "severity": "Serious",
+        "batch": "BATCH-100",
+        "reporter": "Dr. Smith"
+      },
+      "safety_003_patient_id": "PAT-300",
+      "pqc_001": {
+        "product": "Product B",
+        "batch": "BATCH-99",
+        "issue": "Damaged packaging, tablets broken",
+        "photo_mentioned": "Yes"
+      },
+      "pqc_002_photo": "Yes",
+      "mi_001_question": "What is the recommended dosage for",
+      "mi_002_question": "Contraindications for",
+      "scanned_ocr": {
+        "patient_id": "Not stated",
+        "product": "Not stated",
+        "reaction": "Headache",
+        "severity": "Serious",
+        "batch": "BATCH-002"
+      },
+      "spanish_product": "Producto A",
+      "french_lot": "LOT-600"
+    },
+    "not_stated_policy": {
+      "count": 144,
+      "all_zero_confidence_no_evidence": true
+    },
+    "ocr": {
+      "document_type": "SCANNED_OCR_PDF",
+      "ocr_confidence": 0.9293,
+      "route": "OCR \u2192 RAG \u2192 Rules",
+      "facts_extracted": {
+        "patient_id": "Not stated",
+        "product": "Not stated",
+        "reaction": "Headache",
+        "severity": "Serious",
+        "batch": "BATCH-002",
+        "actual_question": "Not stated",
+        "reporter": "Not stated",
+        "narrative": "Not stated",
+        "issue": "Not stated",
+        "photo_mentioned": "Not stated",
+        "mi_topic": "Not stated",
+        "table_rows": "Not stated",
+        "image_reference": "Not stated"
+      },
+      "original_text_preserved": true,
+      "review_required": true
+    },
+    "multilingual": {
+      "spanish_001.pdf": {
+        "category": "SAFETY_REPORT_ICSR",
+        "language_flag": "non-en",
+        "review_required": true,
+        "product_value": "Producto A"
+      },
+      "french_001.pdf": {
+        "category": "SAFETY_REPORT_ICSR",
+        "language_flag": "non-en",
+        "review_required": true,
+        "product_value": "Not stated"
       }
     },
-    "backend_analyze": {
-      "status": "PASS",
-      "analysisId": 74
+    "prompt_injection": {
+      "classification_not_overridden": true,
+      "category": "SAFETY_REPORT_ICSR",
+      "injection_detected": true,
+      "patterns_found": [
+        "ignore\\s+(previous|all|above)\\s+instructions"
+      ],
+      "review_required": true
+    },
+    "contradiction": {
+      "note": "Deterministic extraction keeps the first-occurring value; conflict detection runs on all facts and is exercised by unit tests.",
+      "contradictions_found": 0,
+      "review_required": true,
+      "product_value": "Product A"
     }
   }
 }

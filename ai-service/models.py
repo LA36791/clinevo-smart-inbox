@@ -33,6 +33,7 @@ class AnalysisResult(BaseModel):
     pages: list = []
     ocr_confidence: float | None = None
     language_flag: str = 'en'
+    evidence_summary: Optional[Dict[str, Any]] = None
 
 from pydantic import BaseModel as _BM2
 

@@ -28,3 +28,6 @@ temp_uploaded.pdf
 Thumbs.db
 .vscode/
 .idea/
+
+# Runtime logs
+*.log
