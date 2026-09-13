@@ -1,4 +1,4 @@
-﻿* {
+* {
   box-sizing: border-box;
 }
 
@@ -787,5 +787,4 @@ button:disabled {
     width: 100%;
     text-align: left;
   }
-}
 }
