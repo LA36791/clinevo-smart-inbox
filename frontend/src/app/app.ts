@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -301,16 +301,24 @@ export class App implements OnInit {
   }
 
   evidenceCoverage(): number {
+    const coverage = this.analysis?.evidence_summary?.evidence_coverage;
 
-    const total = this.totalFactCount();
-
-    if (!total) {
-      return 0;
+    if (coverage && typeof coverage.coverage_percent === 'number') {
+      return Math.round(coverage.coverage_percent);
     }
 
-    return Math.round(
-      (this.evidenceCount() / total) * 100
+    const facts = this.analysis?.facts || [];
+    const applicable = facts.filter(
+      (fact: any) => fact?.value && fact.value !== 'Not stated'
     );
+
+    if (!applicable.length) return 0;
+
+    const supported = applicable.filter(
+      (fact: any) => Array.isArray(fact?.evidence) && fact.evidence.length > 0
+    ).length;
+
+    return Math.round((supported / applicable.length) * 100);
   }
 
   lowConfidenceCount(): number {
