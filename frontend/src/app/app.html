@@ -163,10 +163,16 @@
   </aside>
 
   <!-- ====================================================== -->
-  <!-- WORKSPACE -->
-  <!-- ====================================================== -->
 
-    <section class="workspace" *ngIf="activeTab === 'workspace'">
+</main>
+
+<!-- ====================================================== -->
+<!-- WORKSPACE -->
+<!-- ====================================================== -->
+
+<main class="layout" *ngIf="activeTab === 'workspace'">
+
+<section class="workspace" *ngIf="selectedInboxItem !== null || analysis">
 
     <div class="upload-card card">
 
@@ -189,12 +195,6 @@
         (change)="onFileSelected($event)"
       />
 
-      <div class="selected-file" *ngIf="selectedFile">
-        <span class="file-icon">📄</span>
-        <strong>{{ selectedFile.name }}</strong>
-        <span class="file-size">({{ (selectedFile.size / 1024 | number:'1.0-0') }} KB)</span>
-      </div>
-
       <button
         class="primary-button"
         (click)="analyze()"
@@ -205,11 +205,6 @@
 
       <div class="status">
         {{ message }}
-      </div>
-
-      <div class="processing-status" *ngIf="analyzing">
-        <span class="spinner"></span>
-        Processing document through AI service...
       </div>
 
     </div>
