@@ -27,6 +27,10 @@ export class App implements OnInit {
     if (window.location.port === '4200') {
       return 'http://localhost:8080';
     }
+    if (/\.onrender\.com$/.test(window.location.hostname)) {
+      // Static-hosted frontend: same origin serves no backend; use the deployed API.
+      return 'https://clinevo-smart-inbox.onrender.com';
+    }
     return '';
   }
 
