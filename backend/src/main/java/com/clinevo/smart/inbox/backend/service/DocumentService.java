@@ -1,5 +1,6 @@
 package com.clinevo.smart.inbox.backend.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,16 +19,21 @@ public class DocumentService {
     private final HttpClient httpClient;
     private final JsonMapper jsonMapper;
 
-    public DocumentService() {
-        this(
-                HttpClient.newBuilder()
-                        .version(HttpClient.Version.HTTP_1_1)
-                        .build(),
-                JsonMapper.builder().build()
-        );
+    @Value("${ai.service.url:http://127.0.0.1:8002}")
+    private String aiServiceUrl;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public DocumentService(
+            @Value("${ai.service.url:http://127.0.0.1:8002}") String aiServiceUrl) {
+        this.aiServiceUrl = aiServiceUrl;
+        this.httpClient = HttpClient.newBuilder()
+                .version(HttpClient.Version.HTTP_1_1)
+                .build();
+        this.jsonMapper = JsonMapper.builder().build();
     }
 
     DocumentService(HttpClient httpClient, JsonMapper jsonMapper) {
+        this.aiServiceUrl = "http://127.0.0.1:8002";
         this.httpClient = httpClient;
         this.jsonMapper = jsonMapper;
     }
@@ -70,7 +76,8 @@ public class DocumentService {
             );
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://127.0.0.1:8000/analyze-document"))
+                    .uri(URI.create(aiServiceUrl.replaceAll("/$", "")
+                            + "/analyze-document"))
                     .header(
                             "Content-Type",
                             "multipart/form-data; boundary=" + boundary

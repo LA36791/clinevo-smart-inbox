@@ -119,7 +119,31 @@ export class App {
   ];
 
   constructor(private http: HttpClient) {
+    this.loadEmails();
     this.selectedEmail = this.emails[0];
+  }
+
+  /**
+   * Try to fetch the sample mailbox from the backend (GET /api/emails).
+   * If the backend is unreachable, keep the embedded demo inbox so the
+   * review screen still runs for local UI-only demos.
+   */
+  loadEmails(): void {
+    this.http.get<any[]>('/api/emails').subscribe({
+      next: (serverEmails) => {
+        if (serverEmails && serverEmails.length > 0) {
+          this.emails = serverEmails;
+          this.selectedEmail = this.emails[0];
+          this.addAudit(
+            'INBOX_SYNC',
+            `Loaded ${serverEmails.length} messages from sample mailbox`
+          );
+        }
+      },
+      error: () => {
+        console.log('Sample mailbox unavailable; using embedded demo set.');
+      }
+    });
   }
 
   selectEmail(email: EmailItem): void {

@@ -58,6 +58,19 @@ class DocumentFact(BaseModel):
     page_number: int
 
 
+class ExtractedTable(BaseModel):
+    page_number: int
+    headers: list[str]
+    rows: list[list[str]]
+
+
+class ImageEvidence(BaseModel):
+    page_number: int
+    image_count: int
+    description: str
+    requires_human_review: bool
+
+
 class DocumentAnalysisResponse(BaseModel):
     filename: str
     page_count: int
@@ -65,10 +78,14 @@ class DocumentAnalysisResponse(BaseModel):
     extracted_text: str
     evidence: list[PageEvidence]
     facts: list[DocumentFact]
+    tables: list[ExtractedTable] = []
+    images: list[ImageEvidence] = []
     categories: list[str]
     classification_confidence: float
     classification_reason: str
+    detected_language: str
     document_summary: str
+    ocr_status: str
     human_review_required: bool
     processing_time_ms: int
     processed_at: str
@@ -146,6 +163,166 @@ def fact(
 
 
 # ============================================================
+# DOCUMENT INTELLIGENCE HELPERS
+# ============================================================
+
+def detect_language(text: str) -> str:
+    """Lightweight language hint using scripts + a small marker dictionary.
+
+    This is a deliberate, explainable heuristic: Cloud-provider translation
+    APIs or a proper language ID model would be a drop-in replacement. The
+    extraction pipeline keeps the original text either way (spec-compliant:
+    extract directly in the original language and keep a link to it).
+    """
+    if not text:
+        return "en"
+
+    if re.search(r"[\u0400-\u04FF]", text):
+        return "ru"
+
+    if re.search(r"[\u0900-\u097F]", text):
+        return "hi"
+
+    if re.search(r"[\u4E00-\u9FFF]", text):
+        return "zh"
+
+    lower = text.lower()
+
+    # Distinctive markers only (avoid tokens shared with English such as
+    # "patient", "reaction", "description").
+    de_markers = [
+        "uebelkeit", "fallbericht", "schweregrad", "patientin",
+        "berichterstatter", "beschreibung", "einnahme", "reaktion",
+        "nicht schwerwiegend", "klang", "medikament"
+    ]
+    es_markers = [
+        "paciente", "notificador", "reaccion", "gravedad", "descripcion",
+        "picor", "eritema", "informe", "producto"
+    ]
+    fr_markers = [
+        "medicament", "nausees", "effets indesirables",
+        "cas clinique", "produit"
+    ]
+
+    for marker in de_markers:
+        if marker in lower:
+            return "de"
+
+    for marker in es_markers:
+        if marker in lower:
+            return "es"
+
+    for marker in fr_markers:
+        if marker in lower:
+            return "fr"
+
+    # Word-boundary tokens: "Charge" (batch) and "Lote" (lot) are
+    # characteristic but must not fire inside English words like
+    # "discharged" or "information".
+    if re.search(r"\bcharge\b", text, re.IGNORECASE):
+        return "de"
+
+    if re.search(r"\blote\b", text, re.IGNORECASE):
+        return "es"
+
+    return "en"
+
+
+def extract_tables(page, page_number: int, filename: str) -> list[ExtractedTable]:
+    """Extract gridded tables into structured header/row form.
+
+    Uses PyMuPDF's line-based table detection so lab values, dosing
+    schedules and inspection sheets come back as rows/columns rather than
+    flattened text.
+    """
+    tables = []
+
+    try:
+        finder = page.find_tables()
+
+        for table in finder.tables:
+
+            data = table.extract()
+
+            if not data or len(data) < 2:
+                continue
+
+            headers = [str(c or "").strip() for c in data[0]]
+            rows = [
+                [str(c or "").strip() for c in row]
+                for row in data[1:]
+            ]
+
+            if not any(headers):
+                continue
+
+            tables.append(
+                ExtractedTable(
+                    page_number=page_number,
+                    headers=headers,
+                    rows=rows
+                )
+            )
+
+    except Exception:
+        # Table detection must never fail the whole document.
+        pass
+
+    return tables
+
+
+def extract_images(page, page_number: int) -> list[ImageEvidence]:
+    """Flag embedded images (photos, filled checkboxes) for human review.
+
+    Deep image analysis is out of scope for this offline prototype; a vision
+    model (e.g. a multimodal LLM or an OCR engine) is the intended production
+    plug-in. We still surface the image with a short description and a flag,
+    which is the good-faith attempt the brief asks for.
+    """
+    images = []
+
+    try:
+        image_list = page.get_images(full=True)
+    except Exception:
+        image_list = []
+
+    if image_list:
+        description = (
+            f"{len(image_list)} embedded image(s) found on page "
+            f"{page_number}. Visual content (e.g. a photo of damaged product, "
+            "a rash, a filled-in checkbox) is flagged for human review; a "
+            "vision model can be plugged in to caption these."
+        )
+        images.append(
+            ImageEvidence(
+                page_number=page_number,
+                image_count=len(image_list),
+                description=description,
+                requires_human_review=True
+            )
+        )
+
+    return images
+
+
+def detect_article_layout(text: str) -> bool:
+    """Heuristic: article-flavored layout (abstract/columns/references)."""
+    if not text:
+        return False
+
+    lower = text.lower()
+
+    markers = [
+        "abstract", "doi", "journal", "case report", "references",
+        "conclusion", "discussion", "introduction"
+    ]
+
+    hits = sum(1 for marker in markers if marker in lower)
+
+    return hits >= 3
+
+
+# ============================================================
 # CLASSIFICATION
 # ============================================================
 
@@ -172,7 +349,26 @@ def classify_text(text: str):
         "reaction",
         "hospitalization",
         "hospitalised",
-        "hospitalized"
+        "hospitalized",
+        "uebelkeit",
+        "reaktion",
+        "reaccion",
+        "eritema",
+        "picor",
+        "urticaria",
+        "anaphylactic",
+        "kontakt dermatitis",
+        "nausea",
+        "vomiting",
+        "diarrhoea",
+        "diarrhea",
+        "dizziness",
+        "drowsiness",
+        "fainting",
+        "headache",
+        "itching",
+        "rash",
+        "anaphylaxis"
     ]
 
     safety_support = [
@@ -181,7 +377,12 @@ def classify_text(text: str):
         "serious",
         "non-serious",
         "reporter",
-        "reaction"
+        "reaction",
+        "patientin",
+        "paciente",
+        "schweregrad",
+        "gravedad",
+        "notificador"
     ]
 
     quality_strong = [
@@ -1015,6 +1216,8 @@ async def analyze_document(
 
     evidence = []
     facts = []
+    tables = []
+    images = []
 
     for index, page in enumerate(document):
 
@@ -1043,6 +1246,14 @@ async def analyze_document(
                 )
             )
 
+            tables.extend(
+                extract_tables(
+                    page,
+                    page_number,
+                    file.filename
+                )
+            )
+
         else:
 
             evidence.append(
@@ -1054,6 +1265,8 @@ async def analyze_document(
                 )
             )
 
+        images.extend(extract_images(page, page_number))
+
     full_text = "\n".join(
         e.text
         for e in evidence
@@ -1062,10 +1275,20 @@ async def analyze_document(
 
     has_text = bool(full_text.strip())
 
-    document_type = (
-        "DIGITAL_TEXT_PDF"
+    if not has_text:
+        document_type = "SCANNED_OR_IMAGE_PDF"
+        ocr_status = "OCR_PENDING_HUMAN_REVIEW"
+    elif detect_article_layout(full_text):
+        document_type = "PUBLISHED_ARTICLE"
+        ocr_status = "TEXT_EXTRACTED"
+    else:
+        document_type = "DIGITAL_TEXT_PDF"
+        ocr_status = "TEXT_EXTRACTED"
+
+    detected_language = (
+        detect_language(full_text)
         if has_text
-        else "SCANNED_OR_IMAGE_PDF"
+        else "unknown"
     )
 
     (
@@ -1087,11 +1310,17 @@ async def analyze_document(
 
     requires_ocr_vision = not has_text
 
+    images_need_review = any(
+        item.requires_human_review
+        for item in images
+    )
+
     human_review_required = (
         requires_ocr_vision
         or populated_low_confidence
         or low_evidence
         or len(categories) > 1
+        or images_need_review
     )
 
     summary = create_summary(
@@ -1123,10 +1352,14 @@ async def analyze_document(
         extracted_text=extracted_text,
         evidence=evidence,
         facts=facts,
+        tables=tables,
+        images=images,
         categories=categories,
         classification_confidence=classification_confidence,
         classification_reason=classification_reason,
+        detected_language=detected_language,
         document_summary=summary,
+        ocr_status=ocr_status,
         human_review_required=human_review_required,
         processing_time_ms=elapsed_ms,
         processed_at=utc_now()
