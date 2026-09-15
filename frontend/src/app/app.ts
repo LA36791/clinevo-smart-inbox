@@ -57,6 +57,30 @@ export class App implements OnInit {
   reviewCompleted = false;
   reviewAction = '';
 
+  auditEntries: any[] = null;
+  auditLoading = false;
+
+  loadAudit() {
+    if (!this.analysis?.analysisId) {
+      this.message = 'Audit requires a saved analysis (analysisId).';
+      return;
+    }
+    this.auditLoading = true;
+    this.http
+      .get<any[]>(`${this.backendUrl()}/api/audit?analysisId=${Number(this.analysis.analysisId)}`)
+      .subscribe({
+        next: (rows) => {
+          this.auditEntries = rows || [];
+          this.auditLoading = false;
+        },
+        error: () => {
+          this.auditEntries = [];
+          this.auditLoading = false;
+          this.message = 'Audit history could not be loaded.';
+        },
+      });
+  }
+
   // Dashboard metrics
   dashboard = {
     totalProcessed: 0,

@@ -1,19 +1,34 @@
 {
   "created": "2026-09-12T20:19:32Z",
-  "files": [
-    "safety_001.pdf",
-    "safety_002.pdf",
-    "safety_003.pdf",
-    "pqc_001.pdf",
-    "pqc_002.pdf",
-    "mi_001.pdf",
-    "mi_002.pdf",
-    "notrel_001.pdf",
-    "notrel_002.pdf",
-    "table_001.pdf",
-    "spanish_001.pdf",
-    "french_001.pdf",
-    "adversarial_001.pdf"
+  "updated": "2026-09-15",
+  "count": 15,
+  "note": "All content is synthetic/fictional. No real patient data (PHI) is used. Files below marked 'in data/' exist; synthetic_case.pdf and scanned_case.pdf complete the corpus alongside the 13 listed fixtures.",
+  "fixtures": [
+    {"file": "synthetic_case.pdf", "type": "digital_pdf", "expected_classification": "SAFETY_REPORT_ICSR", "key_expected_fields": ["patient_age", "product", "reaction", "severity"], "expected_review_flag": false, "purpose": "Primary digital ICSR demo document (demo 1)"},
+    {"file": "scanned_case.pdf", "type": "scanned_pdf", "expected_classification": "SAFETY_REPORT_ICSR", "key_expected_fields": ["product", "reaction", "batch"], "expected_review_flag": true, "purpose": "OCR pipeline + OCR-confidence + human-review flagging (demo 2)"},
+    {"file": "safety_001.pdf", "type": "digital_pdf", "expected_classification": "SAFETY_REPORT_ICSR", "key_expected_fields": ["patient_age", "product", "reaction"], "expected_review_flag": false, "purpose": "ICSR corpus variant"},
+    {"file": "safety_002.pdf", "type": "digital_pdf", "expected_classification": "SAFETY_REPORT_ICSR", "key_expected_fields": ["product", "reaction", "outcome"], "expected_review_flag": false, "purpose": "ICSR corpus variant"},
+    {"file": "safety_003.pdf", "type": "digital_pdf", "expected_classification": "SAFETY_REPORT_ICSR", "key_expected_fields": ["product", "severity"], "expected_review_flag": false, "purpose": "Missing-field ICSR variant (Not stated policy)"},
+    {"file": "pqc_001.pdf", "type": "digital_pdf", "expected_classification": "QUALITY_COMPLAINT_PQC", "key_expected_fields": ["product", "batch", "defect"], "expected_review_flag": false, "purpose": "Pure PQC classification path (demo 3)"},
+    {"file": "pqc_002.pdf", "type": "digital_pdf", "expected_classification": "QUALITY_COMPLAINT_PQC", "key_expected_fields": ["product", "batch", "defect"], "expected_review_flag": false, "purpose": "PQC corpus variant"},
+    {"file": "mi_001.pdf", "type": "digital_pdf", "expected_classification": "INFO_REQUEST_MI", "key_expected_fields": ["question", "product"], "expected_review_flag": false, "purpose": "Pure MI classification path (demo 3)"},
+    {"file": "mi_002.pdf", "type": "digital_pdf", "expected_classification": "INFO_REQUEST_MI", "key_expected_fields": ["question", "product"], "expected_review_flag": false, "purpose": "MI corpus variant"},
+    {"file": "notrel_001.pdf", "type": "digital_pdf", "expected_classification": "NOT_RELEVANT", "key_expected_fields": [], "expected_review_flag": false, "purpose": "Irrelevant-document rejection"},
+    {"file": "notrel_002.pdf", "type": "digital_pdf", "expected_classification": "NOT_RELEVANT", "key_expected_fields": [], "expected_review_flag": false, "purpose": "Irrelevant-document rejection variant"},
+    {"file": "table_001.pdf", "type": "digital_pdf", "expected_classification": "SAFETY_REPORT_ICSR", "key_expected_fields": ["product", "reaction"], "expected_review_flag": false, "purpose": "Table extraction (best-effort rows)"},
+    {"file": "spanish_001.pdf", "type": "non_english_pdf", "expected_classification": "SAFETY_REPORT_ICSR", "key_expected_fields": ["product", "reaction"], "expected_review_flag": true, "purpose": "Non-English detection; original text retained; translation NOT_CONFIGURED"},
+    {"file": "french_001.pdf", "type": "non_english_pdf", "expected_classification": "SAFETY_REPORT_ICSR", "key_expected_fields": ["product", "reaction"], "expected_review_flag": true, "purpose": "Non-English detection variant"},
+    {"file": "adversarial_001.pdf", "type": "digital_pdf", "expected_classification": "SAFETY_REPORT_ICSR", "key_expected_fields": [], "expected_review_flag": true, "purpose": "Prompt-injection resistance; flagged for human review"}
   ],
-  "count": 13
+  "coverage": {
+    "digital_pdfs": 12,
+    "scanned_pdfs": 1,
+    "non_english": 2,
+    "pqc_only": 2,
+    "mi_only": 2,
+    "irrelevant": 2,
+    "table_example": 1,
+    "adversarial": 1,
+    "known_gap": "article-style multi-column fixtures: PARTIAL (see REQUIREMENTS_MATRIX row 9)"
+  }
 }

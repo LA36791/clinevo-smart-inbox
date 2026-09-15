@@ -580,6 +580,42 @@
 
         </div>
 
+        <div class="audit-panel" *ngIf="analysis?.analysisId">
+          <h3>Audit Trail</h3>
+          <button
+            class="audit-load"
+            (click)="loadAudit()"
+            [disabled]="auditLoading"
+          >
+            {{ auditLoading ? 'Loading...' : 'Load audit history' }}
+          </button>
+          <table *ngIf="auditEntries && auditEntries.length">
+            <thead>
+              <tr>
+                <th>Action</th>
+                <th>Reviewer</th>
+                <th>AI category</th>
+                <th>Final category</th>
+                <th>Timestamp</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let e of auditEntries">
+                <td>{{ e.action }}</td>
+                <td>{{ e.reviewer }}</td>
+                <td>{{ e.originalCategory }}</td>
+                <td>{{ e.finalCategory }}</td>
+                <td>{{ e.actionTimestamp | date:'medium' }}</td>
+                <td>{{ e.notes }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <p *ngIf="auditEntries && !auditEntries.length">
+            No review actions recorded for this analysis yet.
+          </p>
+        </div>
+
 
         <div
           class="review-form"

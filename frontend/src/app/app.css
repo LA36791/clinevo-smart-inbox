@@ -2,6 +2,48 @@
   box-sizing: border-box;
 }
 
+.audit-panel {
+  margin-top: 18px;
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid #dbe3ee;
+  border-radius: 8px;
+}
+
+.audit-panel h3 {
+  margin: 0 0 10px;
+  font-size: 15px;
+}
+
+.audit-panel .audit-load {
+  margin-bottom: 10px;
+  padding: 6px 12px;
+  border: 1px solid #b9c4d4;
+  background: #f0f4f9;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.audit-panel table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.audit-panel th,
+.audit-panel td {
+  text-align: left;
+  padding: 6px 8px;
+  border-bottom: 1px solid #e4eaf2;
+}
+
+.audit-panel th {
+  color: #5a6a82;
+  font-weight: 600;
+  background: #f7f9fc;
+}
+
+
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
