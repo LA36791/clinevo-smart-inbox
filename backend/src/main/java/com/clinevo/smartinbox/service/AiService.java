@@ -17,12 +17,13 @@ public class AiService {
     @Value("${ai.service.url}")
     private String aiUrl;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
     private final AnalysisPersistenceService persistenceService;
     private final ObjectMapper mapper = new ObjectMapper();
 
-    public AiService(AnalysisPersistenceService persistenceService) {
+    public AiService(AnalysisPersistenceService persistenceService, RestTemplate restTemplate) {
         this.persistenceService = persistenceService;
+        this.restTemplate = restTemplate;
     }
 
     public Object analyze(byte[] file, String filename) throws Exception {
