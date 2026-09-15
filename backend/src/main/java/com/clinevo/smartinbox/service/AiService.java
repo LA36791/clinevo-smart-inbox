@@ -93,8 +93,21 @@ public class AiService {
         }
 
         // Cap protects the AI service from oversized batches; 15 is the
-        // largest assignment batch. Never abort the whole batch for one file.
+        // largest assignment batch. Overflow files are reported, not dropped.
         int limit = Math.min(files.size(), 15);
+        for (int i = limit; i < files.size(); i++) {
+            org.springframework.web.multipart.MultipartFile skipped = files.get(i);
+            String skippedName = skipped == null ? "unknown" : skipped.getOriginalFilename();
+            results.add(mapper.createObjectNode()
+                    .put("file", skippedName == null ? "unknown" : skippedName)
+                    .put("filename", skippedName == null ? "unknown" : skippedName)
+                    .put("status", "SKIPPED")
+                    .put("classification", "NOT_PROCESSED")
+                    .put("confidence", 0.0)
+                    .put("processingTimeMs", 0)
+                    .put("humanReviewRequired", true)
+                    .put("message", "Batch limit is 15 documents; file beyond the cap was not processed"));
+        }
 
         for (int i = 0; i < limit; i++) {
             org.springframework.web.multipart.MultipartFile file = files.get(i);

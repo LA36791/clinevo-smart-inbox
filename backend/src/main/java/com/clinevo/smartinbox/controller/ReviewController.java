@@ -22,10 +22,14 @@ public class ReviewController {
     @PostMapping
     public ResponseEntity<?> review(@RequestBody Map<String, Object> body) {
 
-        System.out.println("=== REVIEW REQUEST RECEIVED ===");
-        System.out.println("BODY: " + body);
-
         try {
+            java.util.Set<String> allowed = java.util.Set.of("ACCEPT", "OVERRIDE");
+            String act = String.valueOf(body.getOrDefault("action", "")).trim().toUpperCase();
+            if (!allowed.contains(act)) {
+                return ResponseEntity.badRequest().body(Map.of(
+                        "error", "Invalid action: must be ACCEPT or OVERRIDE"));
+            }
+
             ReviewAction action = new ReviewAction();
 
             Object analysisId = body.get("analysisId");
@@ -33,7 +37,7 @@ public class ReviewController {
                 action.setAnalysisId(Long.parseLong(analysisId.toString()));
             }
 
-            action.setAction(String.valueOf(body.getOrDefault("action", "")));
+            action.setAction(act);
             action.setOriginalCategory(
                 String.valueOf(body.getOrDefault("originalCategory", ""))
             );
@@ -50,14 +54,9 @@ public class ReviewController {
 
             ReviewAction saved = repository.save(action);
 
-            System.out.println("=== REVIEW SAVED: ID=" + saved.getId() + " ===");
-
             return ResponseEntity.ok(saved);
 
         } catch (Exception e) {
-
-            e.printStackTrace();
-
             return ResponseEntity.badRequest().body(
                 Map.of(
                     "error", "Review save failed",
